@@ -221,6 +221,7 @@ markupspeedtest.row(polandfspdt,serbiafspdt,slovakispdt,slovenispdt,spainflspdt,
 markupspeedtest.row(backlinux,mainmenu)
 # /Speedtest markup
 
+liteclcmd = config.tf + "ton/build/lite-client/lite-client  -p '" + config.tk + "liteserver.pub' -a '127.0.0.1:3031' -C '" + config.tf + "configs/ton-global.config.json' -v 0 -c "
 # Get id for tg value
 @bot.message_handler(commands=["id"])
 def get_id(i):
@@ -612,7 +613,22 @@ def command_disk(message):
 # Validator tools start
 @bot.message_handler(func=lambda message: message.text == lt_validatortools)
 def command_linuxtools(message):
-  bot.send_message(config.tg, text="\U0001F48E " + _("You are welcome") + " \U0001F48E", reply_markup=markupValidator)
+  try:
+    master, slave = pty.openpty()
+    stdout = None
+    stderr = None
+    totalcheckvalidtrs =  liteclcmd + "'getconfig 34' | grep cur_validators | awk -F':| ' {'print $6,$8,$10'}"
+    totalcheckvalidtrs = subprocess.Popen(totalcheckvalidtrs, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
+    stdout, stderr = totalcheckvalidtrs.communicate(timeout=2)
+    stdoutlst = stdout.split()
+    os.close(slave)
+    os.close(master)
+    bot.send_message(config.tg, text="\U0001F48E " + _("You are welcome") + " \U0001F48E \n" + _("Now: Total validator ") + str(stdoutlst[2]) + "\nElections start " + str(datetime.datetime.fromtimestamp(int(stdoutlst[0])).strftime('%B/%d %H:%M:%S')) + "\nElections end " + str(datetime.datetime.fromtimestamp(int(stdoutlst[1])).strftime('%B/%d %H:%M:%S')), reply_markup=markupValidator)
+  except Exception as i:
+    kill(timediff.pid)
+    os.close(slave)
+    os.close(master)
+    bot.send_message(config.tg, text="\U0001F48E " + _("You are welcome") + " \U0001F48E", reply_markup=markupValidator)
 # /Validator tools start
 
 

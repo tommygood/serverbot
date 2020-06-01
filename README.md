@@ -23,9 +23,10 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  1. CPU Utilization
  2. RAM Load
  3. Time Diff
- 4. Disk I/O
- 5. Network perfomance 
- 6. Ping test 
+ 4. Slow log events
+ 5. Disk I/O
+ 6. Network perfomance 
+ 7. Ping test 
 
 #### Alert
 
@@ -46,7 +47,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  5. Check current time diff + Historical data
  6. Know your adnl key
  7. Get your error log
- 8. Get your slow log
+ 8. Get your slow log + Historical data
 
 ##### Server
  1. Check CPU load + Historical data

@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import logging
 import threading
+import re
 import telebot
 from telebot import types
 from telebot import util
@@ -367,6 +368,28 @@ types.InlineKeyboardButton(text=_("21d"), callback_data="diskiohist_21d"),
 types.InlineKeyboardButton(text=_("30d"), callback_data="diskiohist_30d"))
 # Disk io
 
+# Slow logs events
+slowloghist = types.InlineKeyboardMarkup()
+slowloghist.row(
+types.InlineKeyboardButton(text=_("30m"), callback_data="slowhist_30m"),
+types.InlineKeyboardButton(text=_("1h"), callback_data="slowhist_1h"),
+types.InlineKeyboardButton(text=_("3h"), callback_data="slowhist_3h"),
+types.InlineKeyboardButton(text=_("6h"), callback_data="slowhist_6h"),
+types.InlineKeyboardButton(text=_("12h"), callback_data="slowhist_12h"),
+types.InlineKeyboardButton(text=_("1d"), callback_data="slowhist_1d"),
+types.InlineKeyboardButton(text=_("+"), callback_data="slowhistmore"))
+
+slowhistmore = types.InlineKeyboardMarkup()
+slowhistmore.row(
+types.InlineKeyboardButton(text="\U00002190", callback_data="slowloghist"),
+types.InlineKeyboardButton(text=_("3d"), callback_data="slowhist_3d"),
+types.InlineKeyboardButton(text=_("5d"), callback_data="slowhist_5d"),
+types.InlineKeyboardButton(text=_("7d"), callback_data="slowhist_7d"),
+types.InlineKeyboardButton(text=_("14d"), callback_data="slowhist_14d"),
+types.InlineKeyboardButton(text=_("21d"), callback_data="slowhist_21d"),
+types.InlineKeyboardButton(text=_("30d"), callback_data="slowhist_30d"))
+# Slow logs events
+
 
 
 # InlineKeyboards
@@ -512,6 +535,28 @@ def historygetdio(f,t,lbl,rptitle,wptitle,poutf,rm):
     bot.send_message(config.tg, text = _("Disk I/O Utilization history load error"))
 # /History load welcome Disk I/O
 
+# History load welcome
+def historygetslowlog(f,t,lbl,ptitle,poutf,rm):
+  try:
+    bot.send_chat_action(config.tg, "upload_photo")
+    df = pd.read_csv(os.path.join(config.tontgpath, f), sep=";", encoding="utf-8", header=None)
+    df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+    period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(minutes=t)
+    x = df.iloc[:,0].loc[period]
+    y = df.iloc[:,1].loc[period]
+    plt.xlabel('Time') 
+    plt.ylabel(lbl) 
+    plt.title(ptitle)
+    plt.grid(True)
+    plt.plot(x, y)
+    plt.gcf().autofmt_xdate()
+    plt.savefig(poutf)
+    plt.close() 
+    load = open(poutf, 'rb')
+    bot.send_photo(config.tg, load, reply_markup=rm)
+  except:
+    bot.send_message(config.tg, text = _("History load error"))
+# /History load welcome
 
 
 
@@ -671,6 +716,7 @@ def command_slowlog(message):
     slowlogf = str(subprocess.call(slowlog, shell = True,encoding='utf-8'))
     slwfile = open('/tmp/node_slow.log', 'rb')
     bot.send_document(config.tg, slwfile, reply_markup=markupValidator)
+    historygetslowlog("db/slowlog.dat",30,_("Delay, ms"),_("Slow events"),"/tmp/slowlog.png",slowloghist)
   except:
     bot.send_document(config.tg, text = _("Can't get slow log"), reply_markup=markupValidator)
 # /Slow logs
@@ -2405,6 +2451,242 @@ def inlinekeyboards(call):
       bot.send_message(config.tg, text = _("Disk I/O Utilization history load error"))
 # diskio graph
 
+# SLOW graph
+  if call.data == "slowloghist":
+    bot.edit_message_reply_markup(config.tg, message_id=call.message.message_id, reply_markup=slowloghist)
+  if call.data == "slowhistmore":
+    bot.edit_message_reply_markup(config.tg, message_id=call.message.message_id, reply_markup=slowhistmore)
+  if call.data == "slowhist_30m":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(minutes=30)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_1h = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_1h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowloghist)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_1h":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=1)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_1h = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_1h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowloghist)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_3h":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=3)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_3h = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_3h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowloghist)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_6h":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=6)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_6h = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_6h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowloghist)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_12h":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=12)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_12h = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_12h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowloghist)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_1d":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=24)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_1d = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_1d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowloghist)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_3d":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=72)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_3d = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_3d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowhistmore)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_5d":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=120)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_5d = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_5d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowhistmore)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_7d":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=168)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_7d = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_7d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowhistmore)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_14d":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=336)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_14d = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_14d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowhistmore)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_21d":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=504)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_21d = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_21d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowhistmore)
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+  if call.data == "slowhist_30d":
+    try:
+      df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+      df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
+      period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=720)
+      x = df.iloc[:,0].loc[period]
+      y = df.iloc[:,2].loc[period]
+      plt.xlabel('Time') 
+      plt.ylabel('Delay, ms') 
+      plt.title('Slow events')
+      plt.grid(True)
+      plt.plot(x, y)
+      plt.gcf().autofmt_xdate()
+      plt.savefig('/tmp/slowlog.png')
+      plt.close() 
+      slowlog_30d = open('/tmp/slowlog.png', 'rb')
+      bot.edit_message_media(media=types.InputMedia(type='photo', media=slowlog_30d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=slowhistmore)
+      bot.send
+    except:
+      bot.send_message(config.tg, text = _("Slow events history load error"))
+# SLOW graph
+
 # Restart Validator
   if call.data == "res":
     try:
@@ -3129,6 +3411,50 @@ def monitoringdiskio():
       time.sleep(4)
       td += 5
 
+def monitoringslowlog():
+  td = 0
+  while True:
+    if td == 300:
+      td = 0
+      try:
+        df = pd.read_csv(os.path.join(config.tontgpath, "db/slowlog.dat"), sep=";", encoding="utf-8", header=None)
+        last_slow = int(df.iloc[-1:,0])
+        with open(os.path.join(config.tw, "node.log"), 'r') as fl:
+          for line in fl:
+            re_slow = re.findall(r'(\d{10}\.\d{9})(?:.*)\bSLOW(?:.*)\bname:(\w+)(?:.*)\bduration:(\d+)',line)
+            re_date = re.findall(r'(\d{10})(?:\.\d{9})(?:.*)',line)
+            try:
+              re_date = ("".join(re_date[0]))
+              if int(re_date) > last_slow:
+                if len(re_slow) == 1:
+                  re_slow = (";".join(re_slow[0]))
+                  with open(os.path.join(config.tontgpath, "db/slowlog.dat"), 'a') as sla:
+                    sla.write(str(re_slow) + '\n')
+                else:
+                  pass
+              else:
+                pass
+            except:
+              pass
+      except FileNotFoundError:
+        with open(os.path.join(config.tw, "node.log"), 'r') as fl:
+          for line in fl:
+            re_slow = re.findall(r'(\d{10}\.\d{9})(?:.*)\bSLOW(?:.*)\bname:(\w+)(?:.*)\bduration:(\d+)',line)
+            try:
+              if len(re_slow) == 1:
+                re_slow = (";".join(re_slow[0]))
+                with open(os.path.join(config.tontgpath, "db/slowlog.dat"), 'a') as sla:
+                  sla.write(str(re_slow) + '\n')
+              else:
+                  pass
+            except:
+              pass
+      except:
+        pass
+    else:
+      time.sleep(300)
+      td += 300
+
 if __name__ == '__main__':
   AlertsNotifications = threading.Thread(target = AlertsNotifications)
   AlertsNotifications.start()
@@ -3144,6 +3470,9 @@ if __name__ == '__main__':
 
   monitoringdiskio = threading.Thread(target = monitoringdiskio)
   monitoringdiskio.start()
+
+  monitoringslowlog = threading.Thread(target = monitoringslowlog)
+  monitoringslowlog.start()
 
 # /Alerts
  

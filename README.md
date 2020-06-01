@@ -62,7 +62,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  10. Check network load + Historical data
  11. Check server network speed to different countries (Some countries may not work because speedtest servers may have problems. On Hetzner, many countries didn't work. In the future, I will add much more servers for tests)
 
-## Installation in 6 simple steps
+## Installation in 6 simple steps (2-3 minutes)
 
  1. Create your personal telegram bot and get Api Token. [Instruction](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-telegram?view=azure-bot-service-4.0)
  2. Run command below

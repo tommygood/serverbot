@@ -84,6 +84,8 @@ lt_eadnlkey = _("Election adnl key")
 lt_eadnlkey =  "\U0001F511 " + lt_eadnlkey
 lt_errorsinlogs = _("Error logs")
 lt_errorsinlogs =  "\U0001F4D1 " + lt_errorsinlogs
+lt_validatorinfomenu = _("Info")
+lt_validatorinfomenu =  "\U00002139\U0000FE0F " + lt_validatorinfomenu
 lt_slowinlogs = _("Slow logs")
 lt_slowinlogs =  "\U0001F422 " + lt_slowinlogs
 lt_restartvalidnodee = _("Restart validator")
@@ -92,6 +94,9 @@ lt_currentstake = _("Current stake")
 lt_currentstake =  "\U0001F522 " + lt_currentstake
 lt_updatestake = _("Update stake")
 lt_updatestake = "\U00002195\U0000FE0F " + lt_updatestake
+#----
+lt_validatorinfelc = _("Elections")
+lt_validatorinfelc =  "\U0001F5F3\U0000FE0F " + lt_validatorinfelc
 #----
 lt_andorraspdt =  _("Andorra")
 lt_andorraspdt =  "\U0001F1E6\U0001F1E9 " + lt_andorraspdt
@@ -137,6 +142,8 @@ lt_unitedkspdt =  _("United Kingdom")
 lt_unitedkspdt =  "\U0001F1EC\U0001F1E7 " + lt_unitedkspdt
 lt_backlinux =  _("Back to Linux tools")
 lt_backlinux = "\U0001F519 " + lt_backlinux
+lt_backvalidatorm =  _("Back to Validator tools")
+lt_backvalidatorm = "\U0001F519 " + lt_backvalidatorm
 # /Menu vars
 
 
@@ -179,6 +186,7 @@ tonwalletbal = types.KeyboardButton(lt_tonwalletbal)
 timediff = types.KeyboardButton(lt_timediff)
 eadnlkey = types.KeyboardButton(lt_eadnlkey)
 errorsinlogs = types.KeyboardButton(lt_errorsinlogs)
+validatorinfomenu = types.KeyboardButton(lt_validatorinfomenu)
 slowinlogs = types.KeyboardButton(lt_slowinlogs)
 restartvalidnodee = types.KeyboardButton(lt_restartvalidnodee)
 currentstake = types.KeyboardButton(lt_currentstake)
@@ -186,9 +194,18 @@ updatestake = types.KeyboardButton(lt_updatestake)
 mainmenu = types.KeyboardButton(lt_mainmenu)
 markupValidator.row(tonwalletbal,currentstake,updatestake)
 markupValidator.row(timediff,eadnlkey,restartvalidnodee)
-markupValidator.row(errorsinlogs,slowinlogs)
+markupValidator.row(validatorinfomenu,errorsinlogs,slowinlogs)
 markupValidator.row(mainmenu)
 # /Validator markup
+
+# Validator Info markup
+markupValidatorInfo = types.ReplyKeyboardMarkup()
+validatorinfelc = types.KeyboardButton(lt_validatorinfelc)
+mainmenu = types.KeyboardButton(lt_mainmenu)
+backvalidatorm = types.KeyboardButton(lt_backvalidatorm)
+markupValidatorInfo.row(validatorinfelc)
+markupValidatorInfo.row(backvalidatorm,mainmenu)
+# /Validator Info markup
 
 # Speedtest markup
 markupspeedtest = types.ReplyKeyboardMarkup()
@@ -222,6 +239,7 @@ markupspeedtest.row(backlinux,mainmenu)
 # /Speedtest markup
 
 liteclcmd = config.tf + "ton/build/lite-client/lite-client  -p '" + config.tk + "liteserver.pub' -a '127.0.0.1:3031' -C '" + config.tf + "configs/ton-global.config.json' -v 0 -c "
+
 # Get id for tg value
 @bot.message_handler(commands=["id"])
 def get_id(i):
@@ -611,7 +629,7 @@ def command_disk(message):
 # Validator tools
 
 # Validator tools start
-@bot.message_handler(func=lambda message: message.text == lt_validatortools)
+@bot.message_handler(func=lambda message: message.text in (lt_validatortools,lt_backvalidatorm))
 def command_linuxtools(message):
   try:
     master, slave = pty.openpty()
@@ -623,7 +641,7 @@ def command_linuxtools(message):
     stdoutlst = stdout.split()
     os.close(slave)
     os.close(master)
-    bot.send_message(config.tg, text="\U0001F48E " + _("You are welcome") + " \U0001F48E \n" + _("Now: Total validator ") + str(stdoutlst[2]) + "\nElections start " + str(datetime.datetime.fromtimestamp(int(stdoutlst[0])).strftime('%B/%d %H:%M:%S')) + "\nElections end " + str(datetime.datetime.fromtimestamp(int(stdoutlst[1])).strftime('%B/%d %H:%M:%S')), reply_markup=markupValidator)
+    bot.send_message(config.tg, text="\U0001F48E " + _("You are welcome") + " \U0001F48E \n" + _("Now: Total validators ") + str(stdoutlst[2]) + "\nElections start " + str(datetime.datetime.fromtimestamp(int(stdoutlst[0])).strftime('%B/%d %H:%M:%S')) + "\nElections end " + str(datetime.datetime.fromtimestamp(int(stdoutlst[1])).strftime('%B/%d %H:%M:%S')), reply_markup=markupValidator)
   except Exception as i:
     kill(timediff.pid)
     os.close(slave)
@@ -710,6 +728,16 @@ def command_adnlkey(message):
     bot.send_message(config.tg, text=_("Can't get adnl key "))
 # /Election adnl key
 
+# Info
+@bot.message_handler(func=lambda message: message.text == lt_validatorinfomenu)
+def command_errlog(message):
+  try:
+    #errorlog = "tac " + config.tw + "/node.log | grep -n -m 25 -i 'error' > /tmp/node_error.log"
+    bot.send_message(config.tg, text=_("Validator info menu"), reply_markup=markupValidatorInfo)
+  except:
+    bot.send_message(config.tg, text = _("alidator info menu Error"), reply_markup=markupValidatorInfo)
+# Info
+
 # Error logs
 @bot.message_handler(func=lambda message: message.text == lt_errorsinlogs)
 def command_errlog(message):
@@ -737,6 +765,41 @@ def command_slowlog(message):
     bot.send_document(config.tg, text = _("Can't get slow log"), reply_markup=markupValidator)
 # /Slow logs
 
+
+#######################################################
+# Validators Info tools
+
+# Election
+@bot.message_handler(func=lambda message: message.text == lt_validatorinfelc)
+def command_linuxtools(message):
+  try:
+    master, slave = pty.openpty()
+    stdout = None
+    stderr = None
+    electstatus = liteclcmd + "'runmethod -1:3333333333333333333333333333333333333333333333333333333333333333 active_election_id' | grep result\: | awk '{print $3}'"
+    totalcheckvalidtrsbefore =  liteclcmd + "'getconfig 32' | grep prev_validators | awk -F':| ' {'print $6,$8,$10'}"
+    totalcheckvalidtrs =  liteclcmd + "'getconfig 34' | grep cur_validators | awk -F':| ' {'print $6,$8,$10'}"
+    totalcheckvalidtrs = subprocess.Popen(totalcheckvalidtrsbefore + " ; " + totalcheckvalidtrs + " ; " + electstatus, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
+    stdout, stderr = totalcheckvalidtrs.communicate(timeout=2)
+    stdoutlst = stdout.split()
+    os.close(slave)
+    os.close(master)
+    if int(stdoutlst[6]) == 0:
+      ec = "closed \U0000274C"
+      ecstr = "\U0000274C"
+    else:
+      ec = "open \U00002705"
+      ecstr = "\U00002705"
+    bot.send_message(config.tg, text=str(ecstr) + _("Elections are ") + str(ec) +  _("\nBefore: Total validators ") + str(stdoutlst[2]) + "\nElections start " + str(datetime.datetime.fromtimestamp(int(stdoutlst[0])).strftime('%B/%d %H:%M:%S')) + "\nElections end " + str(datetime.datetime.fromtimestamp(int(stdoutlst[1])).strftime('%B/%d %H:%M:%S')) + _("\n\nNow: Total validators ") + str(stdoutlst[5]) + "\nElections start " + str(datetime.datetime.fromtimestamp(int(stdoutlst[3])).strftime('%B/%d %H:%M:%S')) + "\nElections end " + str(datetime.datetime.fromtimestamp(int(stdoutlst[4])).strftime('%B/%d %H:%M:%S')), reply_markup=markupValidatorInfo)
+  except Exception as i:
+    kill(timediff.pid)
+    os.close(slave)
+    os.close(master)
+    bot.send_message(config.tg, text=_("Can't get elections information"), reply_markup=markupValidatorInfo)
+# /Validator tools start
+
+# Validators Info tools
+#######################################################
 
 @bot.callback_query_handler(func = lambda call: True)
 def inlinekeyboards(call):
@@ -2918,7 +2981,7 @@ def command_currdiskload(message):
 @bot.message_handler(func=lambda message: message.text == lt_spdtst)
 def command_speedtest(message):
   bot.send_message(config.tg, text=_("Check server network speed. ") + "\U0001F4E1", reply_markup=markupspeedtest)
-# /Network speed start
+# Network speed start
 
 # Network speed Andorra
 @bot.message_handler(func=lambda message: message.text == lt_andorraspdt)
@@ -2932,7 +2995,7 @@ def command_testspeed_andorra(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Andorra
+# Network speed Andorra
    
 # Network speed Austria
 @bot.message_handler(func=lambda message: message.text == lt_austriaspdt)
@@ -2946,7 +3009,7 @@ def command_testspeed_austria(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Austria
+# Network speed Austria
 
 # Network speed Belgium
 @bot.message_handler(func=lambda message: message.text == lt_belgiumspdt)
@@ -2960,7 +3023,7 @@ def command_testspeed_belgium(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Belgium
+# Network speed Belgium
 
 # Network speed Bosnia and Herzegovina
 @bot.message_handler(func=lambda message: message.text == lt_bosherzspdt)
@@ -2974,7 +3037,7 @@ def command_testspeed_bosnia_herzegovina(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Bosnia and Herzegovina
+# Network speed Bosnia and Herzegovina
 
 # Network speed Croatia
 @bot.message_handler(func=lambda message: message.text == lt_croatiaspdt)
@@ -2988,7 +3051,7 @@ def command_testspeed_croatia(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Croatia
+# Network speed Croatia
 
 # Network speed Czech Republic
 @bot.message_handler(func=lambda message: message.text == lt_czechrpspdt)
@@ -3002,7 +3065,7 @@ def command_testspeed_czech_republic(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Czech Republic
+# Network speed Czech Republic
 
 # Network speed Denmark
 @bot.message_handler(func=lambda message: message.text == lt_denmarkspdt)
@@ -3016,7 +3079,7 @@ def command_testspeed_denmark(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Denmark
+# Network speed Denmark
 
 # Network speed France
 @bot.message_handler(func=lambda message: message.text == lt_francefspdt)
@@ -3030,7 +3093,7 @@ def command_testspeed_france(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed France
+# Network speed France
 
 # Network speed Germany
 @bot.message_handler(func=lambda message: message.text == lt_germanyspdt)
@@ -3044,7 +3107,7 @@ def command_testspeed_germany(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Germany
+# Network speed Germany
 
 # Network speed Hungary
 @bot.message_handler(func=lambda message: message.text == lt_hungaryspdt)
@@ -3058,7 +3121,7 @@ def command_testspeed_hungary(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Hungary
+# Network speed Hungary
 
 # Network speed Italy
 @bot.message_handler(func=lambda message: message.text == lt_italyflspdt)
@@ -3072,7 +3135,7 @@ def command_testspeed_italy(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Italy
+# Network speed Italy
 
 # Network speed Liechtenstein
 @bot.message_handler(func=lambda message: message.text == lt_liechtnspdt)
@@ -3086,7 +3149,7 @@ def command_testspeed_liechtenstein(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Liechtenstein
+# Network speed Liechtenstein
 
 # Network speed Luxembourg
 @bot.message_handler(func=lambda message: message.text == lt_luxmbrgspdt)
@@ -3100,7 +3163,7 @@ def command_testspeed_luxembourg(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Luxembourg
+# Network speed Luxembourg
 
 # Network speed Netherlands
 @bot.message_handler(func=lambda message: message.text == lt_nthlndsspdt)
@@ -3114,7 +3177,7 @@ def command_testspeed_netherlands(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Netherlands
+# Network speed Netherlands
 
 # Network speed Poland
 @bot.message_handler(func=lambda message: message.text == lt_polandfspdt)
@@ -3128,7 +3191,7 @@ def command_testspeed_poland(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Poland
+# Network speed Poland
 
 # Network speed Serbia
 @bot.message_handler(func=lambda message: message.text == lt_serbiafspdt)
@@ -3142,7 +3205,7 @@ def command_testspeed_serbia(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Serbia
+# Network speed Serbia
 
 # Network speed Slovakia
 @bot.message_handler(func=lambda message: message.text == lt_slovakispdt)
@@ -3156,7 +3219,7 @@ def command_testspeed_slovakia(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Slovakia
+# Network speed Slovakia
 
 # Network speed Slovenia
 @bot.message_handler(func=lambda message: message.text == lt_slovenispdt)
@@ -3170,7 +3233,7 @@ def command_testspeed_slovenia(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Slovenia
+# Network speed Slovenia
 
 # Network speed Spain
 @bot.message_handler(func=lambda message: message.text == lt_spainflspdt)
@@ -3184,7 +3247,7 @@ def command_testspeed_spain(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Spain
+# Network speed Spain
 
 # Network speed Switzerland
 @bot.message_handler(func=lambda message: message.text == lt_swtzlndspdt)
@@ -3198,7 +3261,7 @@ def command_testspeed_switzerland(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed Switzerland
+# Network speed Switzerland
 
 # Network speed United Kingdom
 @bot.message_handler(func=lambda message: message.text == lt_unitedkspdt)
@@ -3212,7 +3275,7 @@ def command_testspeed_uk(message):
     bot.send_photo(config.tg, testspeedfile, reply_markup=markupspeedtest)
   except:
     bot.send_message(config.tg, text=_("Network speed test check failed"), reply_markup=markupspeedtest)
-# /Network speed United Kingdom
+# Network speed United Kingdom
 
 # Back to linux tools
 @bot.message_handler(func=lambda message: message.text == lt_backlinux)
@@ -3437,11 +3500,11 @@ def monitoringslowlog():
         last_slow = int(df.iloc[-1:,0])
         with open(os.path.join(config.tw, "node.log"), 'r') as fl:
           for line in fl:
-            re_slow = re.findall(r'(\d{10}\.\d{9})(?:.*)\bSLOW(?:.*)\bname:(\w+)(?:.*)\bduration:(\d+)',line)
             re_date = re.findall(r'(\d{10})(?:\.\d{9})(?:.*)',line)
             try:
               re_date = ("".join(re_date[0]))
               if int(re_date) > last_slow:
+                re_slow = re.findall(r'(\d{10}\.\d{9})(?:.*)\bSLOW(?:.*)\bname:(\w+)(?:.*)\bduration:(\d+)',line)
                 if len(re_slow) == 1:
                   re_slow = (";".join(re_slow[0]))
                   with open(os.path.join(config.tontgpath, "db/slowlog.dat"), 'a') as sla:

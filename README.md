@@ -19,7 +19,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  8. Error log monitoring
  9. Slow log monitoring
 
-#### Historical data (New)
+#### Historical data
  1. CPU Utilization
  2. RAM Load
  3. Time Diff
@@ -48,6 +48,8 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  6. Know your adnl key
  7. Get your error log
  8. Get your slow log + Historical data
+ 9. Validators count (New)
+ 10. Election status (New)
 
 ##### Server
  1. Check CPU load + Historical data

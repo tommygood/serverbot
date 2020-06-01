@@ -543,7 +543,7 @@ def historygetslowlog(f,t,lbl,ptitle,poutf,rm):
     df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
     period = df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(minutes=t)
     x = df.iloc[:,0].loc[period]
-    y = df.iloc[:,1].loc[period]
+    y = df.iloc[:,2].loc[period]
     plt.xlabel('Time') 
     plt.ylabel(lbl) 
     plt.title(ptitle)

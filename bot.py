@@ -625,6 +625,12 @@ def command_disk(message):
 # /Disk
 
 
+# lt_graphqltools
+@bot.message_handler(func=lambda message: message.text == lt_graphqltools)
+def command_linuxtools(message):
+  bot.send_message(config.tg, text=_("Thank you for your interest, but right now, Tonlab does not have GraphQL SDK for python. Please keep in touch. Feature will be available soon."))
+# lt_graphqltools
+
 #######################################################
 # Validator tools
 

@@ -28,7 +28,7 @@ nodelogressave = 1 # Save node.log before restart with TONTgBot
 memloadalarm = 97 # RAM Utilization alarm starts at
 pingcalarm = 15 # When ping will be more than X ms, you will get alarm.
 cpuutilalarm = 97 # CPU Utilization alarm starts at
-timediffalarm = -25 # Time Diff alarm start at
+timediffalarm = -35 # Time Diff alarm start at
 minstakes = 10001 # Min Stake
 balchecks = 1800 # How often to check your balance, in seconds. 300 = 5 min, 1200 = 20min, 3600 = 1 hour.
 repeattimealarmtd = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about time diff check failed
@@ -36,12 +36,12 @@ repeattimealarmnode = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 1024
 repeattimealarmsrv = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about high CPU, RAM load and ping
 
 # DB Scans
-cfgAlertsNotifications = 1
-cfgAlertsNotificationst = 1
-cfgmonitoringnetwork = 1
-cfgAlertsNotificationssys = 1
-cfgmonitoringdiskio = 1
-cfgmonitoringslowlog = 0
+cfgAlertsNotifications = 1 # Validator engine Monitopring
+cfgAlertsNotificationst = 1 # Time Diff Monitopring
+cfgmonitoringnetwork = 1 # Netowrk Monitopring
+cfgAlertsNotificationssys = 1 # RAM, Ping & CPU Monitopring
+cfgmonitoringdiskio = 1 # Disk I/O Monitopring
+cfgmonitoringslowlog = 0 # Slow log Monitopring
 
 
 

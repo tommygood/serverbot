@@ -2901,12 +2901,24 @@ def inlinekeyboards(call):
         else:
           pass
         time.sleep(3)
-        runvproc = config.tf + "scripts/run.sh"
-        runvproc = str(subprocess.check_output(runvproc, shell = True,preexec_fn=os.setsid,encoding='utf-8'))
-        bot.send_message(config.tg, text = runvproc, reply_markup=markupValidator)
+        try:
+          master, slave = pty.openpty()
+          stdout = None
+          stderr = None
+          runvproc = config.tf + "scripts/run.sh"
+          runvprocc = subprocess.Popen(runvproc, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
+          stdout, stderr = runvprocc.communicate(timeout=5)
+          os.close(slave)
+          os.close(master)
+          bot.send_message(config.tg, text = stdout, reply_markup=markupValidator)
+        except Exception as i:
+          kill(runvprocc.pid)
+          os.close(slave)
+          os.close(master)
+          bot.send_message(config.tg, text = _("Start error. Try to start your node manually"), reply_markup=markupValidator)
       except:
         bot.send_message(config.tg, text = _("Restart error. Try to restart your node manually"), reply_markup=markupValidator)
-    elif call.data == "nores":
+    if call.data == "nores":
       norestart = types.InlineKeyboardMarkup()
       norestart_reply = types.InlineKeyboardButton(text=_("Declined"),callback_data="no_exit")
       norestart.add(norestart_reply) 
@@ -3549,7 +3561,10 @@ def AlertsNotifications():
       except subprocess.CalledProcessError as i:
         if i.output != None:
           if alrtprdvnr in config.repeattimealarmnode:
-            bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Tap restart validator, to run your node"),  parse_mode="Markdown", reply_markup=markupValidator)
+            try:
+              bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Tap restart validator, to run your node"),  parse_mode="Markdown", reply_markup=markupValidator)
+            except:
+              pass
             alrtprdvnr +=5
           else:
             alrtprdvnr +=5
@@ -3565,9 +3580,15 @@ def AlertsNotifications():
         currentstake = "crontab -l | grep -oP 'validator_msig.sh ([0-9]+)' | awk '{print $2}'"
         currentstake = str(subprocess.check_output(currentstake, shell = True,encoding='utf-8').rstrip())
         if int(minstake) < int(float(acctonclibal)) < int(currentstake):
-          bot.send_message(config.tg,_("Your balance is ") + acctonclibal + " \U0001F48E\n" + _("Please change your stake ") + currentstake + " \U0001F48E " + _("because it is lower than your balance "))
+          try:
+            bot.send_message(config.tg,_("Your balance is ") + acctonclibal + " \U0001F48E\n" + _("Please change your stake ") + currentstake + " \U0001F48E " + _("because it is lower than your balance "))
+          except:
+            pass
       except:
-        bot.send_message(config.tg,_("Can't fetch your balance"))
+        try:
+          bot.send_message(config.tg,_("Can't fetch your balance"))
+        except:
+          pass
     else:
       hch += 5
     time.sleep(5)
@@ -3596,7 +3617,10 @@ def AlertsNotificationst():
           i.write(str(int(time.time())) + ";" + stdout.rstrip() + "\n")        
         if int(stdout) < config.timediffalarm:
           if alrtprdtdf in config.repeattimealarmtd:
-            bot.send_message(config.tg, text=_("Time Diff is ") + stdout)
+            try:
+              bot.send_message(config.tg, text=_("Time Diff is ") + stdout)
+            except:
+              pass
             alrtprdtdf +=5
           else:
             alrtprdtdf +=5
@@ -3608,7 +3632,10 @@ def AlertsNotificationst():
         os.close(master)
         if i.output == None:
           if alrtprdtdf in config.repeattimealarmtd:
-            bot.send_message(config.tg, text=_("Time Diff check failed"), reply_markup=markupValidator)
+            try:
+              bot.send_message(config.tg, text=_("Time Diff check failed"), reply_markup=markupValidator)
+            except:
+              pass
             alrtprdtdf +=5
           else:
             alrtprdtdf +=5
@@ -3642,7 +3669,10 @@ def AlertsNotificationssys():
       # Notification
       if int(float(memload)) >= config.memloadalarm:
         if alrtprdmem in config.repeattimealarmsrv:
-          bot.send_message(config.tg, text="\U0001F6A8 " + _("High memory load!!! ") + memload + _("% I recommend you to restart your *validator* node "),  parse_mode="Markdown")
+          try:
+            bot.send_message(config.tg, text="\U0001F6A8 " + _("High memory load!!! ") + memload + _("% I recommend you to restart your *validator* node "),  parse_mode="Markdown")
+          except:
+            pass
           alrtprdmem +=5
         else:
           alrtprdmem +=5
@@ -3651,7 +3681,10 @@ def AlertsNotificationssys():
       
       if int(float(pingc)) >= config.pingcalarm:
         if alrtprdpng in config.repeattimealarmsrv:
-          bot.send_message(config.tg,"\U000026A1 " + _("High ping! ") + pingc + " ms")
+          try:
+            bot.send_message(config.tg,"\U000026A1 " + _("High ping! ") + pingc + " ms")
+          except:
+            pass
           alrtprdpng +=5
         else:
           alrtprdpng +=5
@@ -3660,7 +3693,10 @@ def AlertsNotificationssys():
       
       if int(float(cpuutilalert)) >= config.cpuutilalarm:
         if alrtprdcpu in config.repeattimealarmsrv:
-          bot.send_message(config.tg,"\U000026A1" + _("High CPU Utilization! ") + cpuutilalert + "%")
+          try:
+            bot.send_message(config.tg,"\U000026A1" + _("High CPU Utilization! ") + cpuutilalert + "%")
+          except:
+            pass
           alrtprdcpu +=5
         else:
           alrtprdcpu +=5

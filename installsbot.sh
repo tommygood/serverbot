@@ -1,9 +1,9 @@
 #!/bin/bash
 
-sudo apt update
-sudo apt -y install traceroute
-sudo apt -y install python3-pip
-sudo apt -y install wget
+apt update
+apt -y install traceroute
+apt -y install python3-pip
+apt -y install wget
 
 pip3 install psutil
 pip3 install pyTelegramBotAPI
@@ -21,9 +21,12 @@ echo "Done"
 echo "Download speedtest-cli"
 wget -O /opt/tontgbot/speedtest-cli https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
 chmod +x /opt/tontgbot/speedtest-cli
+systemctl daemon-reload
 echo "Start service and check status"
 echo "service tontgbot start"
-sudo systemctl start tontgbot.service
-sleep 5
+systemctl stop tontgbot.service
+sleep 1
+systemctl start tontgbot.service
+sleep 3
 echo "service tontgbot status"
-sudo systemctl status tontgbot.service
+systemctl status tontgbot.service

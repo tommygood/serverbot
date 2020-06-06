@@ -1,5 +1,3 @@
-#!/bin/bash
-
 [Unit]
 Description=TONTgBot
 After=syslog.target

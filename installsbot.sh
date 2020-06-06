@@ -9,6 +9,7 @@ apt -y install wget
 update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
 update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
 update-alternatives --set python3 /usr/bin/python3.7
+ln -s /usr/lib/python3/dist-packages/apt_pkg.cpython-36m-x86_64-linux-gnu.so /usr/lib/python3/dist-packages/apt_pkg.so
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade setuptools 
 python3 -m pip install --upgrade requests

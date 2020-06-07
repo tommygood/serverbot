@@ -4,13 +4,13 @@ apt update
 #apt -y install python3.7
 #apt -y install python3.7-dev
 apt -y install traceroute
-#apt -y install python3-pip
+apt -y install python3-pip
 apt -y install wget
 #update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
 #update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
 #update-alternatives --set python3 /usr/bin/python3.6
 #ln -s /usr/lib/python3/dist-packages/apt_pkg.cpython-36m-x86_64-linux-gnu.so /usr/lib/python3/dist-packages/apt_pkg.so
-#pip3 install --upgrade pip
+pip3 install --upgrade pip
 #pip3 install --upgrade setuptools 
 #pip3 install --upgrade requests
 #pip3 install --upgrade urllib3

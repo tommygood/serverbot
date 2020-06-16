@@ -2907,7 +2907,7 @@ def inlinekeyboards(call):
           stdout = None
           stderr = None
           #runvproc = config.tontgpath + "/run.sh"
-          runvproc = "/bin/bash /opt/net.ton.dev/scripts/run.sh"
+          runvproc = "/bin/bash " + config.tf + "scripts/run.sh"
           runvprocc = subprocess.Popen(runvproc, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
           stdout, stderr = runvprocc.communicate(timeout=5)
           os.close(slave)
@@ -3587,7 +3587,7 @@ def AlertsNotifications():
                 stdout = None
                 stderr = None
                 #runvproc = config.tontgpath + "/run.sh"
-                runvproc = "/bin/bash /opt/net.ton.dev/scripts/run.sh"
+                runvproc = "/bin/bash " + config.tf + "scripts/run.sh"
                 runvprocc = subprocess.Popen(runvproc, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
                 stdout, stderr = runvprocc.communicate(timeout=5)
                 os.close(slave)

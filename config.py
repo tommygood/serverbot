@@ -37,9 +37,11 @@ repeattimealarmsrv = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240
 
 # DB Scans
 cfgAlertsNotifications = 1 # Validator engine Monitopring
+cfgAlertsNotificationsRam = 1 # RAM Monitoring + history
+cfgAlertsNotificationsCPU = 1 # CPU Monitoring + history
 cfgAlertsNotificationst = 1 # Time Diff Monitopring
 cfgmonitoringnetwork = 1 # Netowrk Monitopring
-cfgAlertsNotificationssys = 1 # RAM, Ping & CPU Monitopring
+cfgAlertsNotificationsping = 1 # RAM, Ping & CPU Monitopring
 cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 cfgmonitoringslowlog = 0 # Slow log Monitopring
 

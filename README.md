@@ -9,7 +9,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
 
 ####  Monitoring
 
- 1. Validator node
+ 1. Validator node + Automatic restart if node down
  2. CPU load 
  3. RAM load
  4. Network
@@ -48,8 +48,8 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  6. Know your adnl key
  7. Get your error log
  8. Get your slow log + Historical data
- 9. Validators count (New)
- 10. Election status (New)
+ 9. Validators count
+ 10. Election status
 
 ##### Server
  1. Check CPU load + Historical data

@@ -665,12 +665,13 @@ def command_linuxtools(message):
       stdout = None
       stderr = None
       totalcheckvalidtrs =  liteclcmd + "'getconfig 34' | grep cur_validators | awk -F':| ' {'print $6,$8,$10'}"
-      totalcheckvalidtrs = subprocess.Popen(totalcheckvalidtrs, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
+      totalshards =  liteclcmd + "'allshards' | grep 'shard #' | wc -l"
+      totalcheckvalidtrs = subprocess.Popen(totalcheckvalidtrs + " ; " + totalshards, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
       stdout, stderr = totalcheckvalidtrs.communicate(timeout=2)
       stdoutlst = stdout.split()
       os.close(slave)
       os.close(master)
-      bot.send_message(config.tg, text="\U0001F48E " + _("You are welcome") + " \U0001F48E \n" + _("Now: Total validators ") + str(stdoutlst[2]) + "\nElections start " + str(datetime.datetime.fromtimestamp(int(stdoutlst[0])).strftime('%B/%d %H:%M:%S')) + "\nElections end " + str(datetime.datetime.fromtimestamp(int(stdoutlst[1])).strftime('%B/%d %H:%M:%S')), reply_markup=markupValidator)
+      bot.send_message(config.tg, text="\U0001F48E " + _("You are welcome") + " \U0001F48E \n" + _("Workchain shards ") + str(stdoutlst[3]) + " \U0001F537\n" + _("Now: Total validators ") + str(stdoutlst[2]) + _("\nValidators Since ") + str(datetime.datetime.fromtimestamp(int(stdoutlst[0])).strftime('%B/%d %H:%M:%S')) + _("\nValidators Until ") + str(datetime.datetime.fromtimestamp(int(stdoutlst[1])).strftime('%B/%d %H:%M:%S')), reply_markup=markupValidator)
     except Exception as i:
       kill(totalcheckvalidtrs.pid)
       os.close(slave)
@@ -840,7 +841,7 @@ def command_linuxtools(message):
       else:
         ec = "open \U00002705"
         ecstr = "\U00002705"
-      bot.send_message(config.tg, text=str(ecstr) + _("Elections are ") + str(ec) +  _("\nBefore: Total validators ") + str(stdoutlst[2]) + "\nElections start " + str(datetime.datetime.fromtimestamp(int(stdoutlst[0])).strftime('%B/%d %H:%M:%S')) + "\nElections end " + str(datetime.datetime.fromtimestamp(int(stdoutlst[1])).strftime('%B/%d %H:%M:%S')) + _("\n\nNow: Total validators ") + str(stdoutlst[5]) + "\nElections start " + str(datetime.datetime.fromtimestamp(int(stdoutlst[3])).strftime('%B/%d %H:%M:%S')) + "\nElections end " + str(datetime.datetime.fromtimestamp(int(stdoutlst[4])).strftime('%B/%d %H:%M:%S')), reply_markup=markupValidatorInfo)
+      bot.send_message(config.tg, text=str(ecstr) + _("Elections are ") + str(ec) +  _("\nBefore: Total validators ") + str(stdoutlst[2]) + _("\nValidators Since ") + str(datetime.datetime.fromtimestamp(int(stdoutlst[0])).strftime('%B/%d %H:%M:%S')) + _("\nValidators Until ") + str(datetime.datetime.fromtimestamp(int(stdoutlst[1])).strftime('%B/%d %H:%M:%S')) + _("\n\nNow: Total validators ") + str(stdoutlst[5]) + _("\nValidators Since ") + str(datetime.datetime.fromtimestamp(int(stdoutlst[3])).strftime('%B/%d %H:%M:%S')) + _("\nValidators Until ") + str(datetime.datetime.fromtimestamp(int(stdoutlst[4])).strftime('%B/%d %H:%M:%S')), reply_markup=markupValidatorInfo)
     except Exception as i:
       kill(totalcheckvalidtrs.pid)
       os.close(slave)
@@ -2905,7 +2906,8 @@ def inlinekeyboards(call):
           master, slave = pty.openpty()
           stdout = None
           stderr = None
-          runvproc = config.tf + "scripts/run.sh"
+          #runvproc = config.tontgpath + "/run.sh"
+          runvproc = "/bin/bash /opt/net.ton.dev/scripts/run.sh"
           runvprocc = subprocess.Popen(runvproc, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
           stdout, stderr = runvprocc.communicate(timeout=5)
           os.close(slave)
@@ -3547,9 +3549,6 @@ def AlertsNotifications():
   #q = [t * p ** (i - 1) for i in range(1, c + 1)]
   
   alrtprdvnr = 5
-  alrtprdmem = 5
-  alrtprdpng = 5
-  alrtprdcpu = 5
   while True:
     if td == 5:
       td = 0
@@ -3561,10 +3560,46 @@ def AlertsNotifications():
       except subprocess.CalledProcessError as i:
         if i.output != None:
           if alrtprdvnr in config.repeattimealarmnode:
+            #try:
+              #bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Tap restart validator, to run your node"),  parse_mode="Markdown", reply_markup=markupValidator)
+            #except:
+              #pass
             try:
-              bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Tap restart validator, to run your node"),  parse_mode="Markdown", reply_markup=markupValidator)
+              bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Restart node in process."),  parse_mode="Markdown", reply_markup=markupValidator)
+              bot.send_chat_action(config.tg, "typing")
+              nodelogbr = str(subprocess.check_output(["du -msh " + config.tw + "/node.log | awk '{print $1}'"], shell = True,encoding='utf-8'))
+              nodelogbr = _("*Node.log size before restart :* _") + nodelogbr + "_"
+              bot.send_message(config.tg, text = nodelogbr, parse_mode="Markdown")
+              bot.send_chat_action(config.tg, "typing")
+              killvproc = "ps -eo pid,cmd | grep -i 'validator-engine' | grep -iv 'grep' | awk '{print $1}' | xargs kill -9 $1"
+              killvproc = str(subprocess.call(killvproc, shell = True,encoding='utf-8'))
+              bot.send_message(config.tg, text = _("Node stopped. RAM & node.log clean. Starting node"), reply_markup=markupValidator)
+              bot.send_chat_action(config.tg, "typing")
+              time.sleep(1)
+              if config.nodelogressave == 1:
+                tms = str(datetime.datetime.today().strftime("%b_%d_%Y-%H_%M_%S"))
+                nodelogsavelog = str(subprocess.call(["mv " + config.tw + "/node.log " + config.tw + "/node_before_" + tms + ".log"], shell = True,encoding='utf-8'))
+              else:
+                pass
+              time.sleep(2)
+              try:
+                master, slave = pty.openpty()
+                stdout = None
+                stderr = None
+                #runvproc = config.tontgpath + "/run.sh"
+                runvproc = "/bin/bash /opt/net.ton.dev/scripts/run.sh"
+                runvprocc = subprocess.Popen(runvproc, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
+                stdout, stderr = runvprocc.communicate(timeout=5)
+                os.close(slave)
+                os.close(master)
+                bot.send_message(config.tg, text = stdout, reply_markup=markupValidator)
+              except Exception as i:
+                kill(runvprocc.pid)
+                os.close(slave)
+                os.close(master)
+                bot.send_message(config.tg, text = _("Start error. Try to start your node manually"), reply_markup=markupValidator)
             except:
-              pass
+              bot.send_message(config.tg, text = _("Restart error. Try to restart your node manually"), reply_markup=markupValidator)
             alrtprdvnr +=5
           else:
             alrtprdvnr +=5
@@ -3644,66 +3679,107 @@ def AlertsNotificationst():
       td += 5
 
 # Alerts Validator node
-def AlertsNotificationssys():
+
+# RAM Monitoring
+def AlertsNotificationsRam():
   td = 0
   alrtprdmem = 5
-  alrtprdpng = 5
+  while True:
+    if td == 5:
+      try:
+        td = 0
+        memload = "free -m | grep Mem | awk '/Mem/{used=$3} /Mem/{total=$2} END {printf (used*100)/total}'"
+        memload = str(subprocess.check_output(memload, shell = True, encoding='utf-8'))
+        # History data
+        with open(os.path.join(config.tontgpathdb, "ramload.dat"), "a") as i:
+          i.write(str(int(time.time())) + ";" + memload + "\n")
+        # Notification
+        if int(float(memload)) >= config.memloadalarm:
+          if alrtprdmem in config.repeattimealarmsrv:
+            try:
+              bot.send_message(config.tg, text="\U0001F6A8 " + _("High memory load!!! ") + memload + _("% I recommend you to restart your *validator* node "),  parse_mode="Markdown")
+            except:
+              pass
+            alrtprdmem +=5
+          else:
+            alrtprdmem +=5
+        if int(float(memload)) < config.memloadalarm:
+          alrtprdmem = 5
+        time.sleep(5)
+        td += 5
+      except:
+        time.sleep(5)
+        td += 5
+    else:
+      time.sleep(5)
+      td += 5
+
+# CPU Monitoring
+def AlertsNotificationsCPU():
+  td = 0
   alrtprdcpu = 5
   while True:
     if td == 5:
-      td = 0
-      memload = "free -m | grep Mem | awk '/Mem/{used=$3} /Mem/{total=$2} END {printf (used*100)/total}'"
-      memload = str(subprocess.check_output(memload, shell = True, encoding='utf-8'))
-      pingc = "ping -c 1 " + config.srvping + " | tail -1 | awk '{printf $4}' | cut -d '/' -f 1 | tr -d $'\n'"
-      pingc = str(subprocess.check_output(pingc, shell = True, encoding='utf-8'))
-      cpuutilalert = str(psutil.cpu_percent())
-      
-      # History data
-      with open(os.path.join(config.tontgpathdb, "ramload.dat"), "a") as i:
-        i.write(str(int(time.time())) + ";" + memload + "\n")
-      with open(os.path.join(config.tontgpathdb, "pingcheck.dat"), "a") as i:
-        i.write(str(int(time.time())) + ";" + pingc + "\n")
-      with open(os.path.join(config.tontgpathdb, "cpuload.dat"), "a") as i:
-        i.write(str(int(time.time())) + ";" + cpuutilalert + "\n")
-      
-      # Notification
-      if int(float(memload)) >= config.memloadalarm:
-        if alrtprdmem in config.repeattimealarmsrv:
-          try:
-            bot.send_message(config.tg, text="\U0001F6A8 " + _("High memory load!!! ") + memload + _("% I recommend you to restart your *validator* node "),  parse_mode="Markdown")
-          except:
-            pass
-          alrtprdmem +=5
-        else:
-          alrtprdmem +=5
-      if int(float(memload)) < config.memloadalarm:
-        alrtprdmem = 5
-      
-      if int(float(pingc)) >= config.pingcalarm:
-        if alrtprdpng in config.repeattimealarmsrv:
-          try:
-            bot.send_message(config.tg,"\U000026A1 " + _("High ping! ") + pingc + " ms")
-          except:
-            pass
-          alrtprdpng +=5
-        else:
-          alrtprdpng +=5
-      if int(float(pingc)) < config.pingcalarm:
-        alrtprdpng = 5
-      
-      if int(float(cpuutilalert)) >= config.cpuutilalarm:
-        if alrtprdcpu in config.repeattimealarmsrv:
-          try:
-            bot.send_message(config.tg,"\U000026A1" + _("High CPU Utilization! ") + cpuutilalert + "%")
-          except:
-            pass
-          alrtprdcpu +=5
-        else:
-          alrtprdcpu +=5
-      if int(float(cpuutilalert)) < config.cpuutilalarm:
-        alrtprdcpu = 5
-    time.sleep(5)
-    td += 5
+      try:
+        td = 0
+        cpuutilalert = str(psutil.cpu_percent())
+        with open(os.path.join(config.tontgpathdb, "cpuload.dat"), "a") as i:
+          i.write(str(int(time.time())) + ";" + cpuutilalert + "\n")
+        if int(float(cpuutilalert)) >= config.cpuutilalarm:
+          if alrtprdcpu in config.repeattimealarmsrv:
+            try:
+              bot.send_message(config.tg,"\U000026A1" + _("High CPU Utilization! ") + cpuutilalert + "%")
+            except:
+              pass
+            alrtprdcpu +=5
+          else:
+            alrtprdcpu +=5
+        if int(float(cpuutilalert)) < config.cpuutilalarm:
+          alrtprdcpu = 5
+        time.sleep(5)
+        td += 5
+      except:
+        time.sleep(5)
+        td += 5
+    else:
+      time.sleep(5)
+      td += 5
+
+
+
+
+def AlertsNotificationsping():
+  td = 0
+  alrtprdpng = 5
+  while True:
+    if td == 5:
+      try:
+        td = 0
+        pingc = "ping -c 1 " + config.srvping + " | tail -1 | awk '{printf $4}' | cut -d '/' -f 1 | tr -d $'\n'"
+        pingc = str(subprocess.check_output(pingc, shell = True, encoding='utf-8'))
+        with open(os.path.join(config.tontgpathdb, "pingcheck.dat"), "a") as i:
+          i.write(str(int(time.time())) + ";" + pingc + "\n")
+        if int(float(pingc)) >= config.pingcalarm:
+          if alrtprdpng in config.repeattimealarmsrv:
+            try:
+              bot.send_message(config.tg,"\U000026A1 " + _("High ping! ") + pingc + " ms")
+            except:
+              pass
+            alrtprdpng +=5
+          else:
+            alrtprdpng +=5
+        if int(float(pingc)) < config.pingcalarm:
+          alrtprdpng = 5
+        time.sleep(5)
+        td += 5
+      except:
+        time.sleep(5)
+        td += 5
+    else:
+      time.sleep(5)
+      td += 5
+
+
 
 def monitoringnetwork():
   td = 0
@@ -3802,6 +3878,14 @@ if __name__ == '__main__':
   if config.cfgAlertsNotifications == 1:
     AlertsNotifications = threading.Thread(target = AlertsNotifications)
     AlertsNotifications.start()
+  
+  if config.cfgAlertsNotificationsRam == 1:
+    AlertsNotificationsRam = threading.Thread(target = AlertsNotificationsRam)
+    AlertsNotificationsRam.start()
+
+  if config.cfgAlertsNotificationsCPU == 1:
+    AlertsNotificationsCPU = threading.Thread(target = AlertsNotificationsCPU)
+    AlertsNotificationsCPU.start()
 
   if config.cfgAlertsNotificationst == 1:
     AlertsNotificationst = threading.Thread(target = AlertsNotificationst)
@@ -3811,9 +3895,9 @@ if __name__ == '__main__':
     monitoringnetwork = threading.Thread(target = monitoringnetwork)
     monitoringnetwork.start()
 
-  if config.cfgAlertsNotificationssys == 1:
-    AlertsNotificationssys = threading.Thread(target = AlertsNotificationssys)
-    AlertsNotificationssys.start()
+  if config.cfgAlertsNotificationsping == 1:
+    AlertsNotificationsping = threading.Thread(target = AlertsNotificationsping)
+    AlertsNotificationsping.start()
   
   if config.cfgmonitoringdiskio ==1:
     monitoringdiskio = threading.Thread(target = monitoringdiskio)

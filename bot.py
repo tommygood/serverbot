@@ -3609,7 +3609,7 @@ def AlertsNotifications():
         minstake = config.minstakes
         wlt = "head -1 " + config.tk + "*.addr"
         wlt = str(subprocess.check_output(wlt, shell = True,encoding='utf-8').rstrip())
-        acctoncli = config.ud + "/tonos-cli account " + wlt + " | grep -i 'balance' | awk '{print $2}'"
+        acctoncli = "cd " + config.ud + " && " + config.ud + "/tonos-cli account " + wlt + " | grep -i 'balance' | awk '{print $2}'"
         acctoncli = str(subprocess.check_output(acctoncli, shell = True,encoding='utf-8'))
         acctonclibal = str(int(acctoncli) / 1000000000)
         currentstake = "crontab -l | grep -oP 'validator_msig.sh ([0-9]+)' | awk '{print $2}'"

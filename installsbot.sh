@@ -24,20 +24,20 @@ pip3 install --upgrade numpy
 pip3 install --upgrade pandas
 
 echo "Copy files"
-cp -pv ./sbot.sh /etc/init.d/tontgbot
+sudo cp -pv ./sbot.sh /etc/init.d/tontgbot
 chmod -v +x /etc/init.d/tontgbot
-cp -pv ./tontgbot.service /etc/systemd/system
+sudo cp -pv ./tontgbot.service /etc/systemd/system
 chmod -v +x ./bot.py
 echo "Done"
 echo "Download speedtest-cli"
 wget -O ./speedtest-cli https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
 chmod +x ./speedtest-cli
-#systemctl daemon-reload
+sudo systemctl daemon-reload
 echo "Start service and check status"
 echo "service tontgbot start"
-systemctl stop tontgbot.service
+sudo systemctl stop tontgbot.service
 sleep 1
-systemctl start tontgbot.service
+sudo systemctl start tontgbot.service
 sleep 3
 echo "service tontgbot status"
 systemctl status tontgbot.service

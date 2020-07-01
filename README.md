@@ -75,11 +75,11 @@ $ git clone -v https://github.com/anvme/TONTgBot.git $(HOME)tontgbot && cd ./ton
  4. Open ./config.py in any editor and change values in TONTgBot from *Edit starts here* till *Edit ends here*. If you dont know your id(tg value), Just send message to @TONTgIDBot in telegram. Then open ./sbot.sh and put user folder at lines 14-15
  5. Run 
  ```sh
-$ sudo /bin/bash ./installsbot.sh
+$ /bin/bash ./installsbot.sh
 ```
  6. Enable bot start after reboot
   ```sh
-$ sudo systemctl enable tontgbot.service 
+$ systemctl enable tontgbot.service 
 ```
 ## Available languages *Yes, with google translate
 Change languages=['en'] in bot.py to language, what you need

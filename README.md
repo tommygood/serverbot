@@ -70,12 +70,12 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  2. Send to your new bot command /start and go to the next step
  3. Run command below
 ```sh
-$ git clone -v https://github.com/anvme/TONTgBot.git /opt/tontgbot && chmod +x /opt/tontgbot/installsbot.sh
+$ git clone -v https://github.com/anvme/TONTgBot.git $(HOME)tontgbot && cd ./tontgbot && chmod +x ./installsbot.sh
 ```
- 4. Open /opt/tontgbot/config.py in any editor and change values in TONTgBot from *Edit starts here* till *Edit ends here*. If you dont know your id(tg value), Just send message to @TONTgIDBot in telegram.
+ 4. Open ./config.py in any editor and change values in TONTgBot from *Edit starts here* till *Edit ends here*. If you dont know your id(tg value), Just send message to @TONTgIDBot in telegram.
  5. Run 
  ```sh
-$ sudo /bin/bash /opt/tontgbot/installsbot.sh
+$ sudo /bin/bash ./installsbot.sh
 ```
  6. Enable bot start after reboot
   ```sh

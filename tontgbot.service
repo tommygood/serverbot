@@ -4,6 +4,8 @@ After=syslog.target
 
 [Service]
 Type=simple
+User=ubuntu
+Group=ubuntu
 ExecStart=/etc/init.d/tontgbot start
 ExecStop=/etc/init.d/tontgbot stop
 

@@ -5,15 +5,15 @@
 # Edit starts here
 TgBotAPIKey = 'x:y' # API Keythat you get from @BotFather
 tg = 1111 # Your id, you can get it by sending command /id to bot @TONTgIDBot
-ud = '/opt/net.ton.dev/ton/build/utils' # UTILS_DIR | You can easy get it from $ env command. Be sure, before this command you run env.sh
-tk = '/root/ton-keys/' # KEYS_DIR | You can easy get it from $ env command. Be sure, before this command you run env.sh
+ud = '/opt/net.ton.dev/ton/build/utils' # UTILS_DIR | You can easy get it from $ env command. Be sure, before this command you run env.sh !!!!!-->>> Don't forget to specify contest network tonos-cli config --url https://gameX.ton.dev https://docs.ton.dev/86757ecb2/p/9229d3-run-contest-validator 
+tk = '/home/user/ton-keys/' # KEYS_DIR | You can easy get it from $ env command. Be sure, before this command you run env.sh
 tf = '/opt/net.ton.dev/' # NET_TON_DEV_SRC_TOP_DIR | You can easy get it from $ env command. Be sure, before this command you run env.sh
+vu = 'https://net.ton.live/validators?section=details&public_key=' # Change 'net' to your game.
+tontgpath = '/home/user/tontgbot' # User folder with this bot.
+tontgpathdb = '/home/user/tontgbot/db' # User folder with bot database. 
 # Edit ends here
-
-vu = 'https://net.ton.live/validators?section=details&public_key='
 tw = '/var/ton-work' # TON work dir
-tontgpath = '/opt/tontgbot' # Folder with this bot.
-tontgpathdb = '/opt/tontgbot/db' # Folder with bot database. 
+
 
 # Other
 elogc = '250' # Row count for the error log

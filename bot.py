@@ -3555,7 +3555,7 @@ def AlertsNotifications():
       
       # Check validator node running
       try:
-        valnodecheck = str(subprocess.check_output(["pidof","validator-engine"], encoding='utf-8'))
+        valnodecheck = str(subprocess.check_output(["pidof validator-engine"], encoding='utf-8'))
         alrtprdvnr =5
       except subprocess.CalledProcessError as i:
         if i.output != None:

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-apt update
+sudo apt update
 #apt -y install python3.7
 #apt -y install python3.7-dev
-apt -y install traceroute
-apt -y install python3-pip
-apt -y install wget
+sudo apt -y install traceroute
+sudo apt -y install python3-pip
+sudo apt -y install wget
 #update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
 #update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
 #update-alternatives --set python3 /usr/bin/python3.6

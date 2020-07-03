@@ -71,7 +71,7 @@ sudo rm -rf /tmp/*.png
 
 If you get Can't fetch your balance, check for tonlabs-cli.conf.json in ton/build/utils/
 
-## Installation in 6 simple steps (2-3 minutes, and your bot is ready)
+## Installation in 5 simple steps (2-3 minutes, and your bot is ready)
 
  1. Create your personal telegram bot and get Api Token. [Instruction](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-telegram?view=azure-bot-service-4.0)
  2. Send to your new bot command /start and go to the next step
@@ -79,15 +79,12 @@ If you get Can't fetch your balance, check for tonlabs-cli.conf.json in ton/buil
 ```sh
 $ git clone -v https://github.com/anvme/TONTgBot.git $(HOME)tontgbot && cd ./tontgbot && chmod +x ./installsbot.sh
 ```
- 4. Open ./config.py in any editor and change values in TONTgBot from *Edit starts here* till *Edit ends here*. If you dont know your id(tg value), Just send message to @TONTgIDBot in telegram. Then open ./sbot.sh and put user folder at lines 14-15. Open ./tontgbot.service and put user&group at lines 6-7
+ 4. Open ./config.py in any editor and change values in TONTgBot from *Edit starts here* till *Edit ends here*. If you dont know your id(tg value), Just send message to @TONTgIDBot in telegram. Then open ./sbot.sh and put user folder at lines 14-15. Open ./tontgbot.service and put user&group at lines 7-8
  5. Run 
  ```sh
 $ /bin/bash ./installsbot.sh
 ```
- 6. Enable bot start after reboot
-  ```sh
-$ sudo systemctl enable tontgbot.service 
-```
+
 ## Available languages *Yes, with google translate
 Change languages=['en'] in bot.py to language, what you need
   ```sh

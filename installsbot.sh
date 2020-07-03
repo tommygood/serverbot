@@ -38,6 +38,7 @@ echo "service tontgbot start"
 sudo systemctl stop tontgbot.service
 sleep 1
 sudo systemctl start tontgbot.service
-sleep 3
+sleep 2
+sudo systemctl enable tontgbot.service
 echo "service tontgbot status"
 systemctl status tontgbot.service

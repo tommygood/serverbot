@@ -68,6 +68,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
 If you get History load error, remove bot files from /tmp
 sudo rm -rf /tmp/*.log
 sudo rm -rf /tmp/*.png
+
 If you get Can't fetch your balance, check for tonlabs-cli.conf.json in ton/build/utils/
 
 ## Installation in 6 simple steps (2-3 minutes, and your bot is ready)

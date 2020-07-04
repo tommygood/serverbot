@@ -45,7 +45,7 @@ cfgmonitoringnetwork = 1 # Netowrk Monitopring
 cfgAlertsNotificationsping = 1 # RAM, Ping & CPU Monitopring
 cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 cfgmonitoringslowlog = 0 # Slow log Monitopring
-cfgstakechange = 1 # Autostake
+cfgstakechange = 0 # Autostake. Check balance and edit stake to max
 cfgmonitoringadnlkey = 1 # Adnl key db checker
 
 

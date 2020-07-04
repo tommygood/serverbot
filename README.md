@@ -15,7 +15,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  4. Network
  5. Time diff
  6. Wallet balance
- 7. Stake monitoring
+ 7. Stake monitoring + Auto stake (New!)
  8. Error log monitoring
  9. Slow log monitoring
 

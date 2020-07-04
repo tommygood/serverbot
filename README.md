@@ -41,7 +41,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
 ##### Validator
 
  1. Restart validotor node
- 2. Check current stake
+ 2. Check current stake + Auto stake (New!)
  3. Update stake
  4. Check wallet balance
  5. Check current time diff + Historical data

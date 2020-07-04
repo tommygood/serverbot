@@ -25,12 +25,13 @@ traceroutetest = '1.1.1.1' # Traceroute test server
 nodelogressave = 1 # Save node.log before restart with TONTgBot
 
 # Alarms
-memloadalarm = 97 # RAM Utilization alarm starts at
+memloadalarm = 95 # RAM Utilization alarm starts at
 pingcalarm = 15 # When ping will be more than X ms, you will get alarm.
 cpuutilalarm = 97 # CPU Utilization alarm starts at
-timediffalarm = -35 # Time Diff alarm start at
+timediffalarm = -55 # Time Diff alarm start at
 minstakes = 10001 # Min Stake
-balchecks = 1800 # How often to check your balance, in seconds. 300 = 5 min, 1200 = 20min, 3600 = 1 hour. To disable balance check, put here 1801
+balchecks = 1800 # How often to check your balance, in seconds. 300 = 5 min, 1200 = 20min, 3600 = 1 hour.
+stakecheck = 60 # Stake check every minute
 repeattimealarmtd = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about time diff check failed
 repeattimealarmnode = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about validator node down
 repeattimealarmsrv = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about high CPU, RAM load and ping
@@ -44,6 +45,8 @@ cfgmonitoringnetwork = 1 # Netowrk Monitopring
 cfgAlertsNotificationsping = 1 # RAM, Ping & CPU Monitopring
 cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 cfgmonitoringslowlog = 0 # Slow log Monitopring
+cfgstakechange = 1 # Autostake
+cfgmonitoringadnlkey = 1 # Adnl key db checker
 
 
 

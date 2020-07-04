@@ -3650,46 +3650,10 @@ def AlertsNotifications():
       except subprocess.CalledProcessError as i:
         if i.output != None:
           if alrtprdvnr in config.repeattimealarmnode:
-            #try:
-              #bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Tap restart validator, to run your node"),  parse_mode="Markdown", reply_markup=markupValidator)
-            #except:
-              #pass
             try:
-              bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Restart node in process."),  parse_mode="Markdown", reply_markup=markupValidator)
-              bot.send_chat_action(config.tg, "typing")
-              nodelogbr = str(subprocess.check_output(["du -msh " + config.tw + "/node.log | awk '{print $1}'"], shell = True,encoding='utf-8'))
-              nodelogbr = _("*Node.log size before restart :* _") + nodelogbr + "_"
-              bot.send_message(config.tg, text = nodelogbr, parse_mode="Markdown")
-              bot.send_chat_action(config.tg, "typing")
-              killvproc = "ps -eo pid,cmd | grep -i 'validator-engine' | grep -iv 'grep' | awk '{print $1}' | xargs kill -9 $1"
-              killvproc = str(subprocess.call(killvproc, shell = True,encoding='utf-8'))
-              bot.send_message(config.tg, text = _("Node stopped. RAM & node.log clean. Starting node"), reply_markup=markupValidator)
-              bot.send_chat_action(config.tg, "typing")
-              time.sleep(1)
-              if config.nodelogressave == 1:
-                tms = str(datetime.datetime.today().strftime("%b_%d_%Y-%H_%M_%S"))
-                nodelogsavelog = str(subprocess.call(["mv " + config.tw + "/node.log " + config.tw + "/node_before_" + tms + ".log"], shell = True,encoding='utf-8'))
-              else:
-                pass
-              time.sleep(2)
-              try:
-                master, slave = pty.openpty()
-                stdout = None
-                stderr = None
-                #runvproc = config.tontgpath + "/run.sh"
-                runvproc = "/bin/bash " + config.tf + "scripts/run.sh"
-                runvprocc = subprocess.Popen(runvproc, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
-                stdout, stderr = runvprocc.communicate(timeout=5)
-                os.close(slave)
-                os.close(master)
-                bot.send_message(config.tg, text = stdout, reply_markup=markupValidator)
-              except Exception as i:
-                kill(runvprocc.pid)
-                os.close(slave)
-                os.close(master)
-                bot.send_message(config.tg, text = _("Start error. Try to start your node manually"), reply_markup=markupValidator)
+              bot.send_message(config.tg, text="\U0001F6A8 " + _("Validator node is not running!!! Tap restart validator, to run your node"),  parse_mode="Markdown", reply_markup=markupValidator)
             except:
-              bot.send_message(config.tg, text = _("Restart error. Try to restart your node manually"), reply_markup=markupValidator)
+              pass
             alrtprdvnr +=5
           else:
             alrtprdvnr +=5

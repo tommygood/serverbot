@@ -3982,7 +3982,56 @@ def monitoringadnlkey():
     else:
       time.sleep(600)
       td += 600
-
+        
+def monitoringstakesend():
+  td = 0
+  while True:
+    if td == 900:
+      td = 0
+      try:
+        tnow = int(time.time())
+        master, slave = pty.openpty()
+        stdout = None
+        stderr = None
+        telectstart = liteclcmd + "'getconfig 34' | grep cur_validators | awk -F':| ' {'print $6'}"
+        telectstart = subprocess.Popen(telectstart, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
+        stdout, stderr = telectstart.communicate(timeout=2)
+        os.close(slave)
+        os.close(master)
+        telectstartsend = int(stdout) + 32768 + config.stakesendcheck
+        telectend = int(stdout) + 65536
+        if telectstartsend < tnow < telectend:
+          try:
+            validatorpubkey = "cat " + config.tk + "elections/net-ton-request-dump2 | grep 'public key' | awk '{print $NF}'"
+            validatorpubkey = str(subprocess.check_output(validatorpubkey, shell = True,encoding='utf-8'))
+            validatorpubkeyint = int(validatorpubkey, 16)
+            master, slave = pty.openpty()
+            stdout = None
+            stderr = None
+            checkinpl = liteclcmd + "'runmethod -1:3333333333333333333333333333333333333333333333333333333333333333 participant_list' | grep 'result:' | grep -oP " + str(validatorpubkeyint)
+            checkinpl = subprocess.Popen(checkinpl, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, encoding='utf-8', close_fds=True)
+            stdout, stderr = checkinpl.communicate(timeout=7)
+            os.close(slave)
+            os.close(master)
+            if stdout.rstrip() != '':
+              pass
+            else:
+              bot.send_message(config.tg, "ALARM!!! Stake not send!!!")
+          except:
+            kill(checkinpl.pid)
+            os.close(slave)
+            os.close(master)
+            bot.send_message(config.tg, "ALARM!!! Check for stake send.")
+        else:
+          pass
+      except:
+        kill(telectstart.pid)
+        os.close(slave)
+        os.close(master)
+        bot.send_message(config.tg, "ALARM!!! Except stake check")
+    else:
+      time.sleep(300)
+      td += 300
 
 if __name__ == '__main__':
 
@@ -4010,7 +4059,7 @@ if __name__ == '__main__':
     AlertsNotificationsping = threading.Thread(target = AlertsNotificationsping)
     AlertsNotificationsping.start()
   
-  if config.cfgmonitoringdiskio ==1:
+  if config.cfgmonitoringdiskio == 1:
     monitoringdiskio = threading.Thread(target = monitoringdiskio)
     monitoringdiskio.start()
   
@@ -4025,6 +4074,10 @@ if __name__ == '__main__':
   if config.cfgmonitoringadnlkey == 1:
     monitoringadnlkey = threading.Thread(target = monitoringadnlkey)
     monitoringadnlkey.start()
+  
+  if config.cfgmonitoringstakesendcheck == 1:
+    monitoringstakesend = threading.Thread(target = monitoringstakesend)
+    monitoringstakesend.start()
 
   else:
     pass

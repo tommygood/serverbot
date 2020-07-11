@@ -18,6 +18,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  7. Stake monitoring + Auto stake (New!)
  8. Error log monitoring
  9. Slow log monitoring
+ 10. Stake send check (New!)
 
 #### Historical data
  1. CPU Utilization
@@ -35,6 +36,7 @@ Tested on ubuntu 18.04 & python 3.6.8 (To check your python version, put to the 
  3. High RAM load
  4. Network degradation
  5. Stake < Wallet balance
+ 6. Stake not send check (New!)
 
 #### Features
 

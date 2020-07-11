@@ -32,6 +32,7 @@ timediffalarm = -55 # Time Diff alarm start at
 minstakes = 10001 # Min Stake
 balchecks = 1800 # How often to check your balance, in seconds. 300 = 5 min, 1200 = 20min, 3600 = 1 hour.
 stakecheck = 60 # Stake check every minute
+stakesendcheck = 9000 # When first stake send check do after election stars. 1800=30min after election start, 3600 = 1hour, 7200 = 2 hours, 9000 = 2.5 hours
 repeattimealarmtd = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about time diff check failed
 repeattimealarmnode = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about validator node down
 repeattimealarmsrv = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about high CPU, RAM load and ping
@@ -47,6 +48,7 @@ cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 cfgmonitoringslowlog = 0 # Slow log Monitopring
 cfgstakechange = 0 # Autostake. Check balance and edit stake to max
 cfgmonitoringadnlkey = 1 # Adnl key db checker
+cfgmonitoringstakesendcheck = 1 # Check stake send
 
 
 

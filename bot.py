@@ -3999,7 +3999,7 @@ def monitoringstakesend():
         os.close(slave)
         os.close(master)
         telectstartsend = int(stdout) + 32768 + config.stakesendcheck
-        telectend = int(stdout) + 65536
+        telectend = int(stdout) + 57346
         if telectstartsend < tnow < telectend:
           try:
             validatorpubkey = "cat " + config.tk + "elections/net-ton-request-dump2 | grep 'public key' | awk '{print $NF}'"

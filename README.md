@@ -125,3 +125,8 @@ Find in bot.py telebot.logger.setLevel(logging.ERROR) and change ERROR to DEBUG,
 $ journalctl -e -u tontgbot > /opt/tontgbot/servicelog.log
 ```
 Then sent this log to my telegram @anvme
+
+
+## Donate
+
+Free TON 0:7ccbe4a3bfac4afd44b20d8042925af13a9fc5aeaec1d600dadd70798f64d9ad

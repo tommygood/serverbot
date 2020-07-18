@@ -79,7 +79,7 @@ If you get Can't fetch your balance, check for tonlabs-cli.conf.json in ton/buil
  2. Send to your new bot command /start and go to the next step
  3. Run command below
 ```sh
-$ git clone -v https://github.com/anvme/TONTgBot.git $(HOME)/tontgbot && cd ./tontgbot && chmod +x ./installsbot.sh
+$ cd $HOME && git clone -v https://github.com/anvme/TONTgBot.git tontgbot && cd ./tontgbot && chmod +x ./installsbot.sh
 ```
  4. Open ./config.py in any editor and change values in TONTgBot from *Edit starts here* till *Edit ends here*. If you dont know your id(tg value), Just send message to @TONTgIDBot in telegram. Then open ./sbot.sh and put user folder at lines 14-15. Open ./tontgbot.service and put user&group at lines 7-8
  5. Run 

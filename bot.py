@@ -3720,33 +3720,7 @@ def AlertsNotifications():
     td += 5
 #
 
-def StakeChange():
-  hch = 0
-  while True:
-    if hch == config.stakecheck:
-      hch = 0
-      try:
-        minstake = config.minstakes
-        wlt = "head -1 " + config.tk + "*.addr"
-        wlt = str(subprocess.check_output(wlt, shell = True,encoding='utf-8').rstrip())
-        acctoncli = "cd " + config.ud + " && " + config.ud + "/tonos-cli account " + wlt + " | grep -i 'balance' | awk '{print $2}'"
-        acctoncli = str(subprocess.check_output(acctoncli, shell = True,encoding='utf-8'))
-        acctonclibal = str(int(acctoncli) / 1000000000)
-        stake = int(float(acctonclibal)) - 15
-        if stake > 100:
-          stakes = str(stake)
-          updatestakecmd = "crontab -l | sed 's/validator_msig.sh \([0-9]\+\)/validator_msig.sh " + stakes + "/' | crontab -"
-          updatestakecmd = str(subprocess.call(updatestakecmd, shell = True,encoding='utf-8'))
-        else:
-          pass
-      except:
-        try:
-          bot.send_message(config.tg,_("Update stake ERROR"))
-        except:
-          pass
-    else:
-      hch += 60
-    time.sleep(60) 
+
 
 
 def AlertsNotificationst():

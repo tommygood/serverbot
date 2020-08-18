@@ -693,7 +693,8 @@ def command_linuxtools(message):
 def command_wallbal(message):
   if message.from_user.id == config.tg:
     try:
-      wlt = "head -1 " + config.tk + "*.addr"
+      hstnm = str(os.uname()[1].split('.')[0])
+      wlt = "head -1 " + config.tk + hstnm +".addr"
       wlt = str(subprocess.check_output(wlt, shell = True,encoding='utf-8').rstrip())
       acctoncli = "cd " + config.ud + " && " + config.ud + "/tonos-cli account " + wlt + " | grep -i 'balance' | awk '{print $2}'"
       acctoncli = str(subprocess.check_output(acctoncli, shell = True,encoding='utf-8'))
@@ -3697,7 +3698,8 @@ def AlertsNotifications():
       hch = 0
       try:
         minstake = config.minstakes
-        wlt = "head -1 " + config.tk + "*.addr"
+        hstnm = str(os.uname()[1].split('.')[0])
+        wlt = "head -1 " + config.tk + hstnm +".addr"
         wlt = str(subprocess.check_output(wlt, shell = True,encoding='utf-8').rstrip())
         acctoncli = "cd " + config.ud + " && " + config.ud + "/tonos-cli account " + wlt + " | grep -i 'balance' | awk '{print $2}'"
         acctoncli = str(subprocess.check_output(acctoncli, shell = True,encoding='utf-8'))

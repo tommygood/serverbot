@@ -1,0 +1,13 @@
+[Unit]
+Description=serverbot
+After=syslog.target
+
+[Service]
+Type=simple
+User=<user>
+Group=<user>
+ExecStart=/etc/init.d/serverbot start
+ExecStop=/etc/init.d/serverbot stop
+
+[Install]
+WantedBy=multi-user.target

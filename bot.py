@@ -2688,6 +2688,10 @@ if __name__ == '__main__':
     AlertsNotificationsNode = threading.Thread(target = AlertsNotificationsNode)
     AlertsNotificationsNode.start()
 
+  if config.cfgAlertsNotificationsSync == 1:
+    AlertsNotificationsSync = threading.Thread(target = AlertsNotificationsSync)
+    AlertsNotificationsSync.start()
+
   if config.cfgAlertsNotificationsRam == 1:
     AlertsNotificationsRam = threading.Thread(target = AlertsNotificationsRam)
     AlertsNotificationsRam.start()

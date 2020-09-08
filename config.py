@@ -9,18 +9,18 @@ srvping = '1.1.1.1' # Ping test server
 traceroutetest = '1.1.1.1' # Traceroute test server
 
 # Server config 
-memloadalarm = 95 # RAM Utilization alarm starts at
+memloadalarm = 90 # RAM Utilization alarm starts at
 pingcalarm = 50 # When ping will be more than X ms, you will get alarm.
-cpuutilalarm = 97 # CPU Utilization alarm starts at
+cpuutilalarm = 99 # CPU Utilization alarm starts at
 repeattimealarmsrv = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about high CPU, RAM load and ping
 cfgAlertsNotificationsRam = 1 # RAM Monitoring + history
 cfgAlertsNotificationsCPU = 1 # CPU Monitoring + history
-cfgmonitoringnetwork = 1 # Netowrk Monitopring
 cfgAlertsNotificationsping = 1 # RAM, Ping & CPU Monitopring
+cfgmonitoringnetwork = 1 # Netowrk Monitopring
 cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 
 # Near config
-syncalarm = 20 # blocks diff for alarm
+syncalarm = 50 # blocks diff for alarm
 repeattimealarmnode = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about validator node down
-cfgAlertsNotificationsNode = 1 # Node Monitoring
-
+cfgAlertsNotificationsNode = 1 # Node pid monitoring
+cfgAlertsNotificationsSync = 1 # Sync status monitoring

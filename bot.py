@@ -2491,8 +2491,6 @@ def AlertsNotificationsNode():
           if alrtprdvnr in config.repeattimealarmnode:
             try:
               bot.send_message(config.tg, text="\U0001F6A8 " + ("Near node is not running."),  parse_mode="Markdown", reply_markup=markupValidator)
-              bot.send_chat_action(config.tg, "typing")
-              time.sleep(2)
             except:
               pass
             alrtprdvnr +=5
@@ -2500,6 +2498,41 @@ def AlertsNotificationsNode():
             alrtprdvnr +=5
     time.sleep(5)
     td += 5
+
+#sync monitoring
+def AlertsNotificationsSync():
+  td = 0
+  alrtprdcpu = 5
+  while True:
+    if td == 5:
+      try:
+        td = 0
+        netblockheight = int(subprocess.check_output(["curl -s https://rpc.betanet.near.org/status | jq .sync_info.latest_block_height"], shell = True,encoding='utf-8'))
+        localblockheight = int(subprocess.check_output(["curl -s http://127.0.0.1:3030/status | jq .sync_info.latest_block_height"], shell = True,encoding='utf-8'))
+        syncdiff = int(netblockheight - localblockheight)
+        #history data
+        with open(os.path.join(config.tontgpathdb, "sync.dat"), "a") as i:
+          i.write(str(int(time.time())) + ";" + syncdiff + "\n")
+        #alert
+        if int(float(syncdiff)) >= config.syncalarm:
+          if alrtprdcpu in config.repeattimealarmnode:
+            try:
+              bot.send_message(config.tg,"\U0001F6A8" + ("Node out of sync ") + str(syncdiff) + (" blocks behind") )
+            except:
+              pass
+            alrtprdcpu +=5
+          else:
+            alrtprdcpu +=5
+        if int(float(syncdiff)) < config.syncalarm:
+          alrtprdcpu = 5
+        time.sleep(5)
+        td += 5
+      except:
+        time.sleep(5)
+        td += 5
+    else:
+      time.sleep(5)
+      td += 5
 
 # RAM Monitoring
 def AlertsNotificationsRam():

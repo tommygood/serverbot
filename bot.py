@@ -2351,11 +2351,11 @@ def command_traceroutecheck(message):
     try:
       bot.send_chat_action(config.tg, "typing")
       bot.send_chat_action(config.tg, "typing")
-      traceroutecheck = "traceroute -4 -w 3 " + config.traceroutetest
+      traceroutecheck = "traceroute " + config.traceroutetest
       traceroutecheck = str(subprocess.check_output(traceroutecheck, shell = True,encoding='utf-8'))
       bot.send_message(config.tg, text=traceroutecheck, reply_markup=markuplinux)
     except:
-      bot.send_message(config.tg, text=("Can't execute tracerote command"), reply_markup=markuplinux)
+      bot.send_message(config.tg, text=("Can't execute traceroute command"), reply_markup=markuplinux)
   else:
     pass
 # /Traceroute test
@@ -2478,31 +2478,31 @@ def AlertsNotificationsNode():
   td = 0
   hch = 0
   t,p,c = 5,2,15
-  alrtprdvnr = 5
+  alrtprdnode = 5
   while True:
     if td == 5:
       td = 0
       # Check validator node running
       try:
         valnodecheck = str(subprocess.check_output(["pidof", "near"], encoding='utf-8'))
-        alrtprdvnr =5
+        alrtprdnode =5
       except subprocess.CalledProcessError as i:
         if i.output != None:
-          if alrtprdvnr in config.repeattimealarmnode:
+          if alrtprdnode in config.repeattimealarmnode:
             try:
               bot.send_message(config.tg, text="\U0001F6A8 " + ("Near node is not running."),  parse_mode="Markdown", reply_markup=markupValidator)
             except:
               pass
-            alrtprdvnr +=5
+            alrtprdnode +=5
           else:
-            alrtprdvnr +=5
+            alrtprdnode +=5
     time.sleep(5)
     td += 5
 
 #sync monitoring
 def AlertsNotificationsSync():
   td = 0
-  alrtprdcpu = 5
+  alrtprdsync = 5
   while True:
     if td == 5:
       try:
@@ -2515,16 +2515,16 @@ def AlertsNotificationsSync():
           i.write(str(int(time.time())) + ";" + syncdiff + "\n")
         #alert
         if int(float(syncdiff)) >= config.syncalarm:
-          if alrtprdcpu in config.repeattimealarmnode:
+          if alrtprdsync in config.repeattimealarmnode:
             try:
               bot.send_message(config.tg,"\U0001F6A8" + ("Node out of sync ") + str(syncdiff) + (" blocks behind") )
             except:
               pass
-            alrtprdcpu +=5
+            alrtprdsync +=5
           else:
-            alrtprdcpu +=5
+            alrtprdsync +=5
         if int(float(syncdiff)) < config.syncalarm:
-          alrtprdcpu = 5
+          alrtprdsync = 5
         time.sleep(5)
         td += 5
       except:

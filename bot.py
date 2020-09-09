@@ -2476,8 +2476,8 @@ def kill(proc_pid):
 # Validator node monitoring
 def AlertsNotificationsNode():
   td = 0
-  hch = 0
-  t,p,c = 5,2,15
+#  hch = 0
+#  t,p,c = 5,2,15
   alrtprdnode = 5
   while True:
     if td == 5:
@@ -2490,7 +2490,8 @@ def AlertsNotificationsNode():
         if i.output != None:
           if alrtprdnode in config.repeattimealarmnode:
             try:
-              bot.send_message(config.tg, text="\U0001F6A8 " + ("Near node is not running."),  parse_mode="Markdown", reply_markup=markupValidator)
+              bot.send_message(config.tg, text="\U0001F6A8 " + ("Near node is not running."))
+              time.sleep(2)
             except:
               pass
             alrtprdnode +=5

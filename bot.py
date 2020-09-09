@@ -2215,7 +2215,7 @@ def AlertsNotificationsNode():
 # Node sync monitoring
 def AlertsNotificationsSync():
   td = 0
-  alrtprdcpu = 5
+  alrtprdsync = 5
   while True:
     if td == 5:
       try:
@@ -2233,11 +2233,11 @@ def AlertsNotificationsSync():
                 bot.send_message(config.tg,"\U0001F6A8" + ("Node out of sync") + str(syncdiff) + (" blocks behind") )
             except:
               pass
-            alrtprdcpu +=5
+            alrtprdsync +=5
           else:
-            alrtprdcpu +=5
+            alrtprdsync +=5
         if int(float(syncdiff)) < config.syncalarm:
-          alrtprdcpu = 5
+          alrtprdsync = 5
         time.sleep(5)
         td += 5
       except:

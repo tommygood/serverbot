@@ -62,15 +62,6 @@ lt_starttime = ("Uptime")
 lt_starttime = "\U0001F7E2 " + lt_starttime
 lt_mainmenu = ("Main menu")
 lt_mainmenu =  "\U0001F3E1 " + lt_mainmenu
-#----
-#lt_francefspdt =  ("France")
-#lt_francefspdt =  "\U0001F1EB\U0001F1F7 " + lt_francefspdt
-#lt_germanyspdt =  ("Germany")
-#lt_germanyspdt =  "\U0001F1E9\U0001F1EA " + lt_germanyspdt
-#lt_nthlndsspdt =  ("Netherlands")
-#lt_nthlndsspdt =  "\U0001F1F3\U0001F1F1 " + lt_nthlndsspdt
-#lt_unitedkspdt =  ("United Kingdom")
-#lt_unitedkspdt =  "\U0001F1EC\U0001F1E7 " + lt_unitedkspdt
 #lt_backlinux =  ("Back to Linux tools")
 #lt_backlinux = "\U0001F519 " + lt_backlinux
 ## /Menu vars
@@ -91,7 +82,6 @@ markuplinux = types.ReplyKeyboardMarkup()
 ping = types.KeyboardButton(lt_ping)
 traceroute = types.KeyboardButton(lt_traceroute)
 topproc = types.KeyboardButton(lt_topproc)
-#ssvalid = types.KeyboardButton(lt_ssvalid)
 starttime = types.KeyboardButton(lt_starttime)
 spdtst = types.KeyboardButton(lt_spdtst)
 currntwrkload = types.KeyboardButton(lt_currntwrkload)
@@ -102,18 +92,6 @@ markuplinux.row(topproc,starttime,spdtst)
 markuplinux.row(currntwrkload,currntdiskload)
 markuplinux.row(mainmenu)
 # /Linux markup
-
-# Speedtest markup
-#markupspeedtest = types.ReplyKeyboardMarkup()
-#francefspdt = types.KeyboardButton(lt_francefspdt)
-#germanyspdt = types.KeyboardButton(lt_germanyspdt)
-#nthlndsspdt = types.KeyboardButton(lt_nthlndsspdt)
-#unitedkspdt = types.KeyboardButton(lt_unitedkspdt)
-#backlinux = types.KeyboardButton(lt_backlinux)
-#mainmenu = types.KeyboardButton(lt_mainmenu)
-#markupspeedtest.row(francefspdt,germanyspdt,nthlndsspdt,unitedkspdt)
-#markupspeedtest.row(backlinux,mainmenu)
-## /Speedtest markup
 
 # Get id for tg value
 @bot.message_handler(commands=["id"])
@@ -127,7 +105,7 @@ def get_id(i):
 @bot.message_handler(commands=["start", "help"])
 def send_welcome(message):
   if message.from_user.id == config.tg:
-    bot.send_message(config.tg, ("Hello") + "\U0001F44B\n" + ("I'm here to help you with your server ") + " \U0001F9BE\n" + ("Let's choose what you want?"),reply_markup=markup)
+    bot.send_message(config.tg, ("Hi, I'm here to make your life a little bit easier ;) "),reply_markup=markup)
   else:
     pass
 # /Start
@@ -242,10 +220,6 @@ types.InlineKeyboardButton(text=("14d"), callback_data="diskiohist_14d"),
 types.InlineKeyboardButton(text=("21d"), callback_data="diskiohist_21d"),
 types.InlineKeyboardButton(text=("30d"), callback_data="diskiohist_30d"))
 # Disk io
-
-# InlineKeyboards
-
-# F
 
 # History load welcome
 def historyget(f,t,lbl,ptitle,poutf,rm):
@@ -1037,267 +1011,7 @@ def inlinekeyboards(call):
         bot.send_message(config.tg, text = ("RAM Load history load error"))
   # RAM graph
 
-  # TimeDiff graph
-    if call.data == "timediffhist":
-      bot.edit_message_reply_markup(config.tg, message_id=call.message.message_id, reply_markup=timediffhist)
-    if call.data == "timediffhistmore":
-      bot.edit_message_reply_markup(config.tg, message_id=call.message.message_id, reply_markup=timediffhistmore)
-    if call.data == "timediffhist_30m":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(minutes=30)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[12, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_30m = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_30m),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhist)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_1h":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=1)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[15, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_1h = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_1h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhist)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_3h":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=3)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[20, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_3h = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_3h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhist)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_6h":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=6)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[20, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_6h = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_6h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhist)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_12h":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=12)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[20, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_12h = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_12h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhist)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_1d":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=24)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[20, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_1d = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_1d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhist)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_3d":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=72)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[20, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_3d = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_3d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhistmore)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_5d":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=120)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[30, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_5d = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_5d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhistmore)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_7d":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=168)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[30, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_7d = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_7d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhistmore)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_14d":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=336)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[30, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_14d = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_14d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhistmore)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_21d":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=504)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[30, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_21d = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_21d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhistmore)
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-    if call.data == "timediffhist_30d":
-      try:
-        df = pd.read_csv(os.path.join(config.serverbotpathdb, "timediff.dat"), sep=";", encoding="utf-8", header=None)
-        df.iloc[:,0] = pd.to_datetime(df.iloc[:,0], unit='s')
-        period = (df.iloc[:,0] > df.iloc[:,0].max() - pd.Timedelta(hours=720)) & (df.iloc[:,1] < 0)
-        x = df.iloc[:,0].loc[period]
-        y = df.iloc[:,1].loc[period]
-        plt.figure(figsize=[30, 9], dpi=100)
-        plt.xlabel('Time')
-        plt.ylabel('Difference')
-        plt.title('Time Diff')
-        plt.grid(True)
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.tight_layout()
-        plt.savefig('/tmp/timediff.png')
-        plt.close()
-        timediff_30d = open('/tmp/timediff.png', 'rb')
-        bot.edit_message_media(media=types.InputMedia(type='photo', media=timediff_30d),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=timediffhistmore)
-        bot.send
-      except:
-        bot.send_message(config.tg, text = ("Time Diff history load error"))
-  # TimeDiff graph
-
-  # PING graph
+# PING graph
     if call.data == "pingcheckhist":
       bot.edit_message_reply_markup(config.tg, message_id=call.message.message_id, reply_markup=pingcheckhist)
     if call.data == "pinghistmore":
@@ -2323,7 +2037,7 @@ def inlinekeyboards(call):
 @bot.message_handler(func=lambda message: message.text == lt_linuxtools)
 def command_linuxtools(message):
   if message.from_user.id == config.tg:
-    bot.send_message(config.tg, text=("Be careful. Some processes need time. ") + "\U000023F3", reply_markup=markuplinux)
+    bot.send_message(config.tg, text=("Slowly, slowly, some processes need time. ") + "\U000023F3", reply_markup=markuplinux)
   else:
     pass
 # /Linux tools start
@@ -2355,7 +2069,7 @@ def command_traceroutecheck(message):
       traceroutecheck = str(subprocess.check_output(traceroutecheck, shell = True,encoding='utf-8'))
       bot.send_message(config.tg, text=traceroutecheck, reply_markup=markuplinux)
     except:
-      bot.send_message(config.tg, text=("Can't execute traceroute command"), reply_markup=markuplinux)
+      bot.send_message(config.tg, text=("Can't execute traceroute, try to change ip or server in config"), reply_markup=markuplinux)
   else:
     pass
 # /Traceroute test
@@ -2395,11 +2109,11 @@ def command_currntwrkload(message):
       bot.send_chat_action(config.tg, "typing")
       currentloadn = psutil.net_io_counters()
       bytes_sent = getattr(currentloadn, 'bytes_sent')
-      bytes_recv = getattr(currentloadn, 'bytes_recv') 
+      bytes_recv = getattr(currentloadn, 'bytes_recv')
       time.sleep(1)
       currentloadn1 = psutil.net_io_counters()
       bytes_sent1 = getattr(currentloadn1, 'bytes_sent')
-      bytes_recv1 = getattr(currentloadn1, 'bytes_recv') 
+      bytes_recv1 = getattr(currentloadn1, 'bytes_recv')
       sentspd = (bytes_sent1-bytes_sent)/1024/1024*8
       recvspd = (bytes_recv1-bytes_recv)/1024/1024*8
       sentspd = str((round(sentspd, 2)))
@@ -2452,7 +2166,7 @@ def command_testspeed(message):
       testspeedfile = open('/tmp/speedtestcheck.png', 'rb')
       bot.send_photo(config.tg, testspeedfile)
     except:
-      bot.send_message(config.tg, text=("Network speed test check failed"))
+      bot.send_message(config.tg, text=("Speed test failed"))
   else:
     pass
 # Network speedtest end
@@ -2476,8 +2190,6 @@ def kill(proc_pid):
 # Validator node monitoring
 def AlertsNotificationsNode():
   td = 0
-#  hch = 0
-#  t,p,c = 5,2,15
   alrtprdnode = 5
   while True:
     if td == 5:
@@ -2500,32 +2212,32 @@ def AlertsNotificationsNode():
     time.sleep(5)
     td += 5
 
-#sync monitoring
+# Node sync monitoring
 def AlertsNotificationsSync():
   td = 0
-  alrtprdsync = 5
+  alrtprdcpu = 5
   while True:
     if td == 5:
       try:
         td = 0
-        netblockheight = int(subprocess.check_output(["curl -s https://rpc.betanet.near.org/status | jq .sync_info.latest_block_height"], shell = True,encoding='utf-8'))
-        localblockheight = int(subprocess.check_output(["curl -s http://127.0.0.1:3030/status | jq .sync_info.latest_block_height"], shell = True,encoding='utf-8'))
-        syncdiff = int(netblockheight - localblockheight)
-        #history data
-        with open(os.path.join(config.tontgpathdb, "sync.dat"), "a") as i:
-          i.write(str(int(time.time())) + ";" + syncdiff + "\n")
-        #alert
+        netcurlrequest = str("curl -s " + "https://rpc." + config.nearnetwork + ".near.org/status | jq .sync_info.latest_block_height")
+        netblockheight = int(subprocess.check_output([netcurlrequest], shell = True,encoding='utf-8'))
+        localblockheight = str(subprocess.check_output(["curl -s http://127.0.0.1:3030/status | jq .sync_info.latest_block_height"], shell = True, encoding='utf-8'))
+        localblockheight2 = localblockheight or 1
+        syncdiff = int(netblockheight - localblockheight2)
+#        with open(os.path.join(config.tontgpathdb, "sync.dat"), "a") as i:
+#          i.write(str(int(time.time())) + ";" + netblockheight + localblockheight + syncdiff + "\n")
         if int(float(syncdiff)) >= config.syncalarm:
-          if alrtprdsync in config.repeattimealarmnode:
+          if alrtprdcpu in config.repeattimealarmnode:
             try:
-              bot.send_message(config.tg,"\U0001F6A8" + ("Node out of sync ") + str(syncdiff) + (" blocks behind") )
+                bot.send_message(config.tg,"\U0001F6A8" + ("Node out of sync") + str(syncdiff) + (" blocks behind") )
             except:
               pass
-            alrtprdsync +=5
+            alrtprdcpu +=5
           else:
-            alrtprdsync +=5
+            alrtprdcpu +=5
         if int(float(syncdiff)) < config.syncalarm:
-          alrtprdsync = 5
+          alrtprdcpu = 5
         time.sleep(5)
         td += 5
       except:
@@ -2552,7 +2264,7 @@ def AlertsNotificationsRam():
         if int(float(memload)) >= config.memloadalarm:
           if alrtprdmem in config.repeattimealarmsrv:
             try:
-              bot.send_message(config.tg, text="\U0001F6A8 " + ("High memory load!!! ") + memload,  parse_mode="Markdown")
+              bot.send_message(config.tg, text="\U0001F6A8 " + ("High memory load! ") + memload,  parse_mode="Markdown")
             except:
               pass
             alrtprdmem +=5

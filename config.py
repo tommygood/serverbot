@@ -20,7 +20,8 @@ cfgmonitoringnetwork = 1 # Netowrk Monitopring
 cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 
 # Near config
-syncalarm = 50 # blocks diff for alarm
-repeattimealarmnode = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about validator node down
+nearnetwork = 'betanet' # Choose your network - betanet/testnet/mainnet
+syncalarm = 50 # Blocks diff for alarm
+repeattimealarmnode = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about validator node issues
 cfgAlertsNotificationsNode = 1 # Node pid monitoring
 cfgAlertsNotificationsSync = 1 # Sync status monitoring

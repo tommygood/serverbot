@@ -35,6 +35,10 @@ Tested on ubuntu 18.04 & python 3.6.9
  9. Check network load
  10. Make a speedtest
 
+### Near validator node alerts
+ 1. Alert if node is down
+ 2. Alert if node is out of sync
+
 ### Installation
  1. Create telegram bot and get Api Token
  2. Send to your new bot command /start

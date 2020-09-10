@@ -21,6 +21,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import gettext
+import requests
+import json
 
 # API Token
 bot = telebot.TeleBot(config.BotAPIKey)
@@ -62,6 +64,8 @@ lt_starttime = ("Uptime")
 lt_starttime = "\U0001F7E2 " + lt_starttime
 lt_mainmenu = ("Main menu")
 lt_mainmenu =  "\U0001F3E1 " + lt_mainmenu
+lt_neartools = ("NEAR tools")
+lt_nearpool = ("My pool info")
 #lt_backlinux =  ("Back to Linux tools")
 #lt_backlinux = "\U0001F519 " + lt_backlinux
 ## /Menu vars
@@ -72,10 +76,16 @@ cpu = types.KeyboardButton(lt_cpu)
 ram = types.KeyboardButton(lt_ram)
 disks = types.KeyboardButton(lt_disks)
 currntdiskload = types.KeyboardButton(lt_currntdiskload)
+neartools = types.KeyboardButton(lt_neartools)
 linuxtools = types.KeyboardButton(lt_linuxtools)
 markup.row(cpu,ram,disks)
-markup.row(currntdiskload,linuxtools)
-# /Default markup
+markup.row(currntdiskload,neartools,linuxtools)
+
+# Near markup
+markupnear = types.ReplyKeyboardMarkup()
+nearpool = types.KeyboardButton(lt_nearpool)
+mainmenu = types.KeyboardButton(lt_mainmenu)
+markupnear.row(nearpool,mainmenu)
 
 # Linux markup
 markuplinux = types.ReplyKeyboardMarkup()
@@ -91,7 +101,6 @@ markuplinux.row(ping,traceroute)
 markuplinux.row(topproc,starttime,spdtst)
 markuplinux.row(currntwrkload,currntdiskload)
 markuplinux.row(mainmenu)
-# /Linux markup
 
 # Get id for tg value
 @bot.message_handler(commands=["id"])
@@ -2029,6 +2038,50 @@ def inlinekeyboards(call):
         bot.send_message(config.tg, text = ("Disk I/O Utilization history load error"))
   # diskio graph
 
+#######################################################
+# Near tools
+# Near tools start
+@bot.message_handler(func=lambda message: message.text == lt_neartools)
+def command_linuxtools(message):
+  if message.from_user.id == config.tg:
+    bot.send_message(config.tg, text=("Tools to check your validator status"), reply_markup=markupnear)
+  else:
+    pass
+# /Near tools start
+
+# Pool info
+@bot.message_handler(func=lambda message: message.text == lt_nearpool)
+def command_poolinfocheck(message):
+  if message.from_user.id == config.tg:
+    try:
+      bot.send_chat_action(config.tg, "typing")
+      values = '{"jsonrpc": "2.0", "method": "validators", "id": "dontcare", "params": [null]}'
+      session = requests.Session()
+      H = {"Content-Type": "application/json"}
+      response = session.post("https://rpc." + config.nearnetwork + ".near.org", values, headers = H)#
+      response_text = response.text
+      json_str = response_text.replace("'", "\"")
+      json_main = json.loads(json_str)
+      level_one = json_main["result"]
+      level_two = level_one["current_validators"]
+      accounts_list = []
+      target_account = config.poolname
+      for item in level_two:
+          account_id = item['account_id']
+          if account_id == target_account:
+              pub_key = item["public_key"]
+              stake = int(item["stake"])/1000000000000000000000000
+              stake = format(stake, '.3f')
+              num_produced_blocks = item["num_produced_blocks"]
+              num_expected_blocks = item["num_expected_blocks"]
+              produced_diff = num_expected_blocks - num_produced_blocks
+      poolinfo = "Pool name:       " + str(target_account) + "\n" + "Pub key:           " + str(pub_key) + "\n" + "Stake:               " + str(stake) + "\n" + "Produced blocks: " + str(num_produced_blocks) + "\n" + "Expected blocks: " + str(num_expected_blocks) + "\n" + "Produced diff:     " + str(produced_diff)
+      bot.send_message(config.tg, text=poolinfo, reply_markup=markupnear)
+    except:
+      bot.send_message(config.tg, text=("Can't get pool info"), reply_markup=markupnear)
+  else:
+    pass
+# /Pool info
 
 #######################################################
 # Linux tools

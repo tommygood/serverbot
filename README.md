@@ -35,9 +35,14 @@ Tested on ubuntu 18.04 & python 3.6.9
  9. Check network load
  10. Make a speedtest
 
-### Near validator node alerts
+### Near validator tools and alerts
  1. Alert if node is down
  2. Alert if node is out of sync
+ 3. Validator info:
+    - Pool name
+    - Pubkey
+    - Stake
+    - Blocks produced and expected
 
 ### Installation
  1. Create telegram bot and get Api Token
@@ -50,6 +55,17 @@ cd $HOME && git clone -v https://github.com/ama31337/serverbot.git && cd ./serve
  5. Run installation script
 ```sh
 ./installsbot.sh
+```
+### Upddate
+ 1. Backup your old config and pull changes from git
+```sh
+cd $HOME/serverbot && mv config.py config.py.bak && git pull
+```
+ 2. Compare the configs and adjust if necessary
+ 3. Restart bot
+```sh
+botstop
+botstart
 ```
 
 ### Start, stop or check bot status

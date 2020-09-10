@@ -21,6 +21,7 @@ cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 
 # Near config
 nearnetwork = 'betanet' # Choose your network - betanet/testnet/mainnet
+poolname = 'xxx' # Your pool name
 syncalarm = 50 # Blocks diff for alarm
 repeattimealarmnode = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about validator node issues
 cfgAlertsNotificationsNode = 1 # Node pid monitoring

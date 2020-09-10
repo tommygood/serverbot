@@ -66,6 +66,9 @@ lt_mainmenu = ("Main menu")
 lt_mainmenu =  "\U0001F3E1 " + lt_mainmenu
 lt_neartools = ("NEAR tools")
 lt_nearpool = ("My pool info")
+lt_nearpool = "\U000FEB47 " + lt_nearpool
+lt_nearlogs = ("Near logs")
+lt_nearlogs = "\U0001F4CB" + lt_nearlogs
 #lt_backlinux =  ("Back to Linux tools")
 #lt_backlinux = "\U0001F519 " + lt_backlinux
 ## /Menu vars
@@ -84,8 +87,9 @@ markup.row(currntdiskload,neartools,linuxtools)
 # Near markup
 markupnear = types.ReplyKeyboardMarkup()
 nearpool = types.KeyboardButton(lt_nearpool)
+nearlogs = types.KeyboardButton(lt_nearlogs)
 mainmenu = types.KeyboardButton(lt_mainmenu)
-markupnear.row(nearpool,mainmenu)
+markupnear.row(nearpool,nearlogs,mainmenu)
 
 # Linux markup
 markuplinux = types.ReplyKeyboardMarkup()
@@ -99,8 +103,7 @@ currntdiskload = types.KeyboardButton(lt_currntdiskload)
 mainmenu = types.KeyboardButton(lt_mainmenu)
 markuplinux.row(ping,traceroute)
 markuplinux.row(topproc,starttime,spdtst)
-markuplinux.row(currntwrkload,currntdiskload)
-markuplinux.row(mainmenu)
+markuplinux.row(currntwrkload,currntdiskload,mainmenu)
 
 # Get id for tg value
 @bot.message_handler(commands=["id"])
@@ -2082,6 +2085,21 @@ def command_poolinfocheck(message):
   else:
     pass
 # /Pool info
+
+# Near logs
+@bot.message_handler(func=lambda message: message.text == lt_nearlogs)
+def command_nearlogs(message):
+  if message.from_user.id == config.tg:
+    try:
+      bot.send_chat_action(config.tg, "typing")
+      nearlogs = "tail -n 5 ~/.nearup/logs/" + config.nearnetwork + ".log"
+      nearlogs = str(subprocess.check_output(nearlogs, shell = True,encoding='utf-8'))
+      bot.send_message(config.tg, text=nearlogs, reply_markup=markupnear)
+    except:
+      bot.send_message(config.tg, text=("Can't get near logs"), reply_markup=markupnear)
+  else:
+    pass
+# /Near logs
 
 #######################################################
 # Linux tools

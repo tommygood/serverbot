@@ -2295,14 +2295,14 @@ def AlertsNotificationsSync():
         netcurlrequest = str("curl -s " + "https://rpc." + config.nearnetwork + ".near.org/status | jq .sync_info.latest_block_height")
         netblockheight = int(subprocess.check_output([netcurlrequest], shell = True,encoding='utf-8'))
         localblockheight = str(subprocess.check_output(["curl -s http://127.0.0.1:3030/status | jq .sync_info.latest_block_height"], shell = True, encoding='utf-8'))
-        localblockheight2 = localblockheight or 1
-        syncdiff = int(netblockheight - localblockheight2)
+        localblockheight = localblockheight or 1
+        syncdiff = int(netblockheight - localblockheight)
 #        with open(os.path.join(config.tontgpathdb, "sync.dat"), "a") as i:
 #          i.write(str(int(time.time())) + ";" + netblockheight + localblockheight + syncdiff + "\n")
         if int(float(syncdiff)) >= config.syncalarm:
-          if alrtprdcpu in config.repeattimealarmnode:
+          if alrtprdsync in config.repeattimealarmnode:
             try:
-                bot.send_message(config.tg,"\U0001F6A8" + ("Node out of sync") + str(syncdiff) + (" blocks behind") )
+                bot.send_message(config.tg,"\U0001F6A8 " + ("Node out of sync ") + str(syncdiff) + (" blocks behind") )
             except:
               pass
             alrtprdsync +=5

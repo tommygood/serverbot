@@ -65,6 +65,7 @@ lt_starttime = "\U0001F7E2 " + lt_starttime
 lt_mainmenu = ("Main menu")
 lt_mainmenu =  "\U0001F3E1 " + lt_mainmenu
 lt_neartools = ("NEAR tools")
+lt_neartools = "\u24c3 " + lt_neartools
 lt_nearpool = ("My pool info")
 lt_nearpool = "\U000FEB47 " + lt_nearpool
 lt_nearlogs = ("Near logs")

@@ -16,6 +16,10 @@ sed -i "s/<user>/"$USER"/g" serverbot.service sbot.sh config.py
 echo "alias botstop='sudo systemctl stop serverbot'" >> /home/$USER/.bash_aliases
 echo "alias botstart='sudo systemctl start serverbot'" >> /home/$USER/.bash_aliases
 echo "alias botstatus='sudo systemctl status serverbot'" >> /home/$USER/.bash_aliases
+echo "alias botstop='sudo systemctl stop serverbot'" >> /home/$USER/.zshrc
+echo "alias botstart='sudo systemctl start serverbot'" >> /home/$USER/.zshrc
+echo "alias botstatus='sudo systemctl status serverbot'" >> /home/$USER/.zshrc
+
 
 echo "Copy files"
 sudo cp -pv ./sbot.sh /etc/init.d/serverbot

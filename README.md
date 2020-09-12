@@ -52,10 +52,16 @@ Tested on ubuntu 18.04 & python 3.6.9
 cd $HOME && git clone -v https://github.com/ama31337/serverbot.git && cd ./serverbot && chmod +x ./installsbot.sh
 ```
  4. Open ./config.py and insert your bot API and your telegram id.
- 5. Run installation script
+ 5. Run installation script and source your bash or zsh to make bot start/stop commands working
 ```sh
 ./installsbot.sh
 ```
+```sh
+source /home/$USER/.bash_aliases
+source /home/$USER/.zshrc
+```
+
+
 ### Update
  1. Backup your old config and pull changes from git
 ```sh
@@ -71,7 +77,6 @@ botstart
 ### Start, stop or check bot status
 If you make any changes in config you need to restart your bot. To start, stop or check status you can use commands in bash:
 ```sh
-source /home/$USER/.bash_aliases
 botstart
 botstop
 botstatus

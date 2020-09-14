@@ -2284,7 +2284,7 @@ def AlertsNotificationsNode():
     time.sleep(5)
     td += 5
 
-# Node sync monitoring
+# NEAR Node sync monitoring
 def AlertsNotificationsSync():
   td = 0
   alrtprdsync = 5
@@ -2318,6 +2318,55 @@ def AlertsNotificationsSync():
     else:
       time.sleep(5)
       td += 5
+
+# NEAR Blocks pruduce monitoring
+def AlertsNotificationsBlocks():
+  td = 0
+  alrtprdblocks = 30
+  while True:
+    if td == 30:
+      try:
+        td = 0
+        values = '{"jsonrpc": "2.0", "method": "validators", "id": "dontcare", "params": [null]}'
+        session = requests.Session()
+        H = {"Content-Type": "application/json"}
+        response = session.post("https://rpc." + config.nearnetwork + ".near.org", values, headers = H)#
+        response_text = response.text
+        json_str = response_text.replace("'", "\"")
+        json_main = json.loads(json_str)
+        level_one = json_main["result"]
+        level_two = level_one["current_validators"]
+        accounts_list = []
+        target_account = config.poolname
+        for item in level_two:
+            account_id = item['account_id']
+            if account_id == target_account:
+                num_produced_blocks = item["num_produced_blocks"]
+                num_expected_blocks = item["num_expected_blocks"]
+                blocksdiff = num_expected_blocks - num_produced_blocks
+        # History data
+        with open(os.path.join(config.serverbotpathdb, "blocks.dat"), "a") as i:
+            i.write(str(int(time.time())) + ";" + str(int(num_produced_blocks)) + ";" + str(int(num_expected_blocks)) + ";" + str(int(blocksdiff)) + "\n")
+        # Alert
+        if int(float(blocksdiff)) >= config.blocksdiff:
+          if alrtprdblocks in config.repeattimealarmnode:
+            try:
+                bot.send_message(config.tg,"\U0001F6A8 " + str(blocksdiff) + ("blocks pruduced less than expected !!! "))
+            except:
+              pass
+            alrtprdblocks +=30
+          else:
+            alrtprdblocks +=30
+        if int(float(blocksdiff)) < config.blocksdiff:
+          alrtprdblocks = 30
+        time.sleep(30)
+        td += 30
+      except:
+        time.sleep(30)
+        td += 30
+    else:
+      time.sleep(30)
+      td += 30
 
 # RAM Monitoring
 def AlertsNotificationsRam():
@@ -2476,6 +2525,10 @@ if __name__ == '__main__':
   if config.cfgAlertsNotificationsSync == 1:
     AlertsNotificationsSync = threading.Thread(target = AlertsNotificationsSync)
     AlertsNotificationsSync.start()
+  
+  if config.cfgAlertsNotificationsBlocks == 1:
+    AlertsNotificationsBlocks = threading.Thread(target = AlertsNotificationsBlocks)
+    AlertsNotificationsBlocks.start()
 
   if config.cfgAlertsNotificationsRam == 1:
     AlertsNotificationsRam = threading.Thread(target = AlertsNotificationsRam)

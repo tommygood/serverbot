@@ -2067,10 +2067,12 @@ def command_poolinfocheck(message):
       json_str = response_text.replace("'", "\"")
       json_main = json.loads(json_str)
       level_one = json_main["result"]
-      level_two = level_one["current_validators"]
+      current_validators = level_one["current_validators"]
+      next_validators = level_one["next_validators"]
+      prev_epoch_kickout = level_one["prev_epoch_kickout"]
       accounts_list = []
       target_account = config.poolname
-      for item in level_two:
+      for item in current_validators:
           account_id = item['account_id']
           if account_id == target_account:
               pub_key = item["public_key"]
@@ -2079,8 +2081,35 @@ def command_poolinfocheck(message):
               num_produced_blocks = item["num_produced_blocks"]
               num_expected_blocks = item["num_expected_blocks"]
               produced_diff = num_expected_blocks - num_produced_blocks
-      poolinfo = "Pool name:       " + str(target_account) + "\n" + "Pub key:           " + str(pub_key) + "\n" + "Stake:               " + str(stake) + "\n" + "Produced blocks: " + str(num_produced_blocks) + "\n" + "Expected blocks: " + str(num_expected_blocks) + "\n" + "Produced diff:     " + str(produced_diff)
-      bot.send_message(config.tg, text=poolinfo, reply_markup=markupnear)
+      for item in next_validators:
+          account_id = item['account_id']
+          if account_id == target_account:
+              pub_key_next = item["public_key"]
+              stake_next = int(item["stake"])/1000000000000000000000000
+              stake_next = format(stake_next, '.3f')
+      for item in prev_epoch_kickout:
+          account_id = item['account_id']
+          if account_id == target_account:
+            kick_reason = str(item["reason"])
+            remove_chars = ["{","}","'"]
+            for charrem in remove_chars:
+                kick_reason = kick_reason.replace(charrem,"")
+            stake = 0
+            num_produced_blocks = 0
+            num_expected_blocks = 0
+            produced_diff = 0
+            pub_key = 0
+            pub_key_next = 1
+      if pub_key == pub_key_next:
+#          next_ok_info = "You are in next validators with stake: " + str(stake_next)
+#          next_notok_info = "You were kicked!"
+          poolinfo = "Pool name:       " + str(target_account) + "\n" + "Pub key:           " + str(pub_key) + "\n" + "Stake:               " + str(stake) + "\n" + "Produced blocks: " + str(num_produced_blocks) + "\n" + "Expected blocks: " + str(num_expected_blocks) + "\n" + "Produced diff:     " + str(produced_diff) + "\n" + "You are in next validators with stake: " + str(stake_next)
+          bot.send_message(config.tg, text=poolinfo, reply_markup=markupnear)
+#      if pub_key == pub_key_next:
+#          bot.send_message(config.tg, text=next_ok_info, reply_markup=markupnear)
+      else:
+          next_notok_info = "You were kicked, because " + str(kick_reason)
+          bot.send_message(config.tg, text=next_notok_info, reply_markup=markupnear)
     except:
       bot.send_message(config.tg, text=("Can't get pool info"), reply_markup=markupnear)
   else:

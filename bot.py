@@ -36,6 +36,13 @@ telebot.logger.setLevel(logging.ERROR) # Outputs Error messages to console.
 #hostn = os.uname()[1]
 #hostn = (hostn[0:hostn.find('.')])
 
+#set NEAR rpc url
+if config.nearnetwork == 'guildnet':
+    rpcurl=("https://rpc.openshards.io")
+else:
+    rpcurl=("https://rpc." + config.nearnetwork + ".near.org")
+# /set NEAR rpc url
+
 # Menu vars
 lt_cpu = ("CPU")
 lt_cpu = "\U0001F39B " + lt_cpu
@@ -2062,7 +2069,7 @@ def command_poolinfocheck(message):
       values = '{"jsonrpc": "2.0", "method": "validators", "id": "dontcare", "params": [null]}'
       session = requests.Session()
       H = {"Content-Type": "application/json"}
-      response = session.post("https://rpc." + config.nearnetwork + ".near.org", values, headers = H)#
+      response = session.post(rpcurl, values, headers = H)
       response_text = response.text
       json_str = response_text.replace("'", "\"")
       json_main = json.loads(json_str)
@@ -2321,7 +2328,8 @@ def AlertsNotificationsSync():
     if td == 5:
       try:
         td = 0
-        netcurlrequest = str("curl -s " + "https://rpc." + config.nearnetwork + ".near.org/status | jq .sync_info.latest_block_height")
+#        netcurlrequest = str("curl -s " + "https://rpc." + config.nearnetwork + ".near.org/status | jq .sync_info.latest_block_height")
+        netcurlrequest = str("curl -s " + rpcurl + "/status | jq .sync_info.latest_block_height")
         netblockheight = int(subprocess.check_output([netcurlrequest], shell = True,encoding='utf-8'))
         localblockheight = str(subprocess.check_output(["curl -s http://127.0.0.1:3030/status | jq .sync_info.latest_block_height"], shell = True, encoding='utf-8'))
         localblockheight = localblockheight or 1
@@ -2359,7 +2367,7 @@ def AlertsNotificationsBlocks():
         values = '{"jsonrpc": "2.0", "method": "validators", "id": "dontcare", "params": [null]}'
         session = requests.Session()
         H = {"Content-Type": "application/json"}
-        response = session.post("https://rpc." + config.nearnetwork + ".near.org", values, headers = H)#
+        response = session.post(rpcurl, values, headers = H)#
         response_text = response.text
         json_str = response_text.replace("'", "\"")
         json_main = json.loads(json_str)
@@ -2554,7 +2562,7 @@ if __name__ == '__main__':
   if config.cfgAlertsNotificationsSync == 1:
     AlertsNotificationsSync = threading.Thread(target = AlertsNotificationsSync)
     AlertsNotificationsSync.start()
-  
+
   if config.cfgAlertsNotificationsBlocks == 1:
     AlertsNotificationsBlocks = threading.Thread(target = AlertsNotificationsBlocks)
     AlertsNotificationsBlocks.start()

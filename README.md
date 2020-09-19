@@ -47,7 +47,7 @@ Tested on ubuntu 18.04 & python 3.6.9
  5. Node logs
  
 ### Installation
- 1. Create telegram bot and get Api Token
+ 1. Create telegram bot and get Api Token with @BotFather.
  2. Send to your new bot command /start
  3. Clone bot to server
 ```sh

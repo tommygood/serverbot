@@ -20,7 +20,7 @@ cfgmonitoringnetwork = 1 # Netowrk Monitopring
 cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 
 # Near config
-nearnetwork = 'betanet' # Choose your network - betanet/testnet/mainnet
+nearnetwork = 'betanet' # Choose your network - betanet/testnet/mainnet/guildnet
 poolname = 'xxx' # Your pool name
 syncalarm = 50 # Blocks diff for alarm
 blocksdiff = 10 # Blocks produced VS expected alarm

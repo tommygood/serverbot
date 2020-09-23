@@ -74,9 +74,15 @@ lt_mainmenu =  "\U0001F3E1 " + lt_mainmenu
 lt_neartools = ("NEAR tools")
 lt_neartools = "\u24c3 " + lt_neartools
 lt_nearpool = ("My pool info")
-lt_nearpool = "\U000FEB47 " + lt_nearpool
+lt_nearpool = "\u2139 " + lt_nearpool
+#lt_nearpool = "\U000FEB47 " + lt_nearpool
 lt_nearlogs = ("Near logs")
 lt_nearlogs = "\U0001F4CB" + lt_nearlogs
+lt_nearcurrent = ("Current")
+lt_nearcurrent = "\u23fa " + lt_nearcurrent
+lt_nearproposals = ("Proposals")
+lt_nearproposals = "\u23e9 " + lt_nearproposals
+
 #lt_backlinux =  ("Back to Linux tools")
 #lt_backlinux = "\U0001F519 " + lt_backlinux
 ## /Menu vars
@@ -97,7 +103,10 @@ markupnear = types.ReplyKeyboardMarkup()
 nearpool = types.KeyboardButton(lt_nearpool)
 nearlogs = types.KeyboardButton(lt_nearlogs)
 mainmenu = types.KeyboardButton(lt_mainmenu)
-markupnear.row(nearpool,nearlogs,mainmenu)
+nearcurrent = types.KeyboardButton(lt_nearcurrent)
+nearproposals = types.KeyboardButton(lt_nearproposals)
+markupnear.row(nearpool,nearlogs)
+markupnear.row(nearcurrent,nearproposals,mainmenu)
 
 # Linux markup
 markuplinux = types.ReplyKeyboardMarkup()
@@ -2137,6 +2146,48 @@ def command_nearlogs(message):
   else:
     pass
 # /Near logs
+
+# Near current
+@bot.message_handler(func=lambda message: message.text == lt_nearcurrent)
+def command_nearcurrent(message):
+  if message.from_user.id == config.tg:
+    try:
+      bot.send_chat_action(config.tg, "typing")
+      nearcurrent1 = "export NODE_ENV=" + config.nearnetwork + " && near validators current | grep Validators"
+      nearcurrent1 = str(subprocess.check_output(nearcurrent1, shell = True,encoding='utf-8'))
+      nearcurrent2 = "export NODE_ENV=" + config.nearnetwork + " && near validators current | grep Stake"
+      nearcurrent2 = str(subprocess.check_output(nearcurrent2, shell = True,encoding='utf-8'))
+      nearcurrent3 = "export NODE_ENV=" + config.nearnetwork + " && near validators current | grep " + config.poolname
+      nearcurrent3 = str(subprocess.check_output(nearcurrent3, shell = True,encoding='utf-8'))
+      nearcurrentall = str(nearcurrent1) + "\n" + str(nearcurrent2) + "\n" + str(nearcurrent3)
+      bot.send_message(config.tg, text=nearcurrentall, reply_markup=markupnear)
+    except:
+      bot.send_message(config.tg, text=("Can't get current validators info"), reply_markup=markupnear)
+  else:
+    pass
+# /Near current
+
+# Near proposals
+@bot.message_handler(func=lambda message: message.text == lt_nearproposals)
+def command_nearproposals(message):
+  if message.from_user.id == config.tg:
+    try:
+      bot.send_chat_action(config.tg, "typing")
+      nearproposals1 = "export NODE_ENV=" + config.nearnetwork + " && near proposals | grep Proposals"
+      nearproposals1 = str(subprocess.check_output(nearproposals1, shell = True,encoding='utf-8'))
+      nearproposals2 = "export NODE_ENV=" + config.nearnetwork + " && near proposals | grep Stake"
+      nearproposals2 = str(subprocess.check_output(nearproposals2, shell = True,encoding='utf-8'))
+      nearproposals3 = "export NODE_ENV=" + config.nearnetwork + " && near proposals | grep " + config.poolname
+      nearproposals3 = str(subprocess.check_output(nearproposals3, shell = True,encoding='utf-8'))
+      nearnearproposalsall = str(nearproposals1) + "\n" + str(nearproposals2) + "\n" + str(nearproposals3)
+      bot.send_message(config.tg, text=nearnearproposalsall, reply_markup=markupnear)
+    except:
+      bot.send_message(config.tg, text=("Can't get proposals validators info"), reply_markup=markupnear)
+  else:
+    pass
+# /Near proposals
+
+
 
 #######################################################
 # Linux tools

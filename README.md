@@ -94,3 +94,10 @@ Find in bot.py telebot.logger.setLevel(logging.ERROR) and change ERROR to DEBUG,
 ```sh
 $ journalctl -e -u serverbot > ~/serverbot/servicelog.log
 ```
+
+
+<img src="https://github.com/ama31337/neartips/blob/master/manuals/near_node_alert.png">
+
+<img src="https://github.com/ama31337/neartips/blob/master/manuals/serverbot.gif">
+
+If bot was helpful to you, feel free to donate a tip --> [@31337.near](https://explorer.near.org/accounts/31337.near)

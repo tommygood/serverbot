@@ -43,6 +43,13 @@ else:
     rpcurl=("https://rpc." + config.nearnetwork + ".near.org")
 # /set NEAR rpc url
 
+#set NEAR pid
+if config.nearnetwork == 'mainnet':
+    nearpid="neard"
+else:
+    nearpid="near"
+#/set NEAR pid
+
 # Menu vars
 lt_cpu = ("CPU")
 lt_cpu = "\U0001F39B " + lt_cpu
@@ -2355,7 +2362,7 @@ def AlertsNotificationsNode():
       td = 0
       # Check validator node running
       try:
-        valnodecheck = str(subprocess.check_output(["pidof", "near"], encoding='utf-8'))
+        valnodecheck = str(subprocess.check_output(["pidof ", nearpid], encoding='utf-8'))
         alrtprdnode =5
       except subprocess.CalledProcessError as i:
         if i.output != None:

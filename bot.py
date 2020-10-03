@@ -50,6 +50,13 @@ else:
     nearpid="near"
 #/set NEAR pid
 
+#set NEAR logs
+if config.nearnetwork == 'mainnet':
+    nearlogsreq="journalctl -u neard.service -n 5"
+else:
+    nearlogsreq="tail -n 5 ~/.nearup/logs/" + config.nearnetwork + ".log"
+#/set NEAR logs
+
 # Menu vars
 lt_cpu = ("CPU")
 lt_cpu = "\U0001F39B " + lt_cpu
@@ -2145,8 +2152,7 @@ def command_nearlogs(message):
   if message.from_user.id == config.tg:
     try:
       bot.send_chat_action(config.tg, "typing")
-      nearlogs = "tail -n 5 ~/.nearup/logs/" + config.nearnetwork + ".log"
-      nearlogs = str(subprocess.check_output(nearlogs, shell = True,encoding='utf-8'))
+      nearlogs = str(subprocess.check_output(nearlogsreq, shell = True,encoding='utf-8'))
       bot.send_message(config.tg, text=nearlogs, reply_markup=markupnear)
     except:
       bot.send_message(config.tg, text=("Can't get near logs"), reply_markup=markupnear)

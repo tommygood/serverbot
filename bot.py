@@ -89,16 +89,15 @@ lt_neartools = ("NEAR tools")
 lt_neartools = "\u24c3 " + lt_neartools
 lt_nearpool = ("My pool info")
 lt_nearpool = "\u2139 " + lt_nearpool
-#lt_nearpool = "\U000FEB47 " + lt_nearpool
 lt_nearlogs = ("Near logs")
 lt_nearlogs = "\U0001F4CB" + lt_nearlogs
 lt_nearcurrent = ("Current")
 lt_nearcurrent = "\u23fa " + lt_nearcurrent
 lt_nearproposals = ("Proposals")
 lt_nearproposals = "\u23e9 " + lt_nearproposals
+lt_nearnext = ("Next")
+lt_nearnext = "\u23e9 " + lt_nearnext
 
-#lt_backlinux =  ("Back to Linux tools")
-#lt_backlinux = "\U0001F519 " + lt_backlinux
 ## /Menu vars
 
 # Default markup
@@ -119,8 +118,9 @@ nearlogs = types.KeyboardButton(lt_nearlogs)
 mainmenu = types.KeyboardButton(lt_mainmenu)
 nearcurrent = types.KeyboardButton(lt_nearcurrent)
 nearproposals = types.KeyboardButton(lt_nearproposals)
-markupnear.row(nearpool,nearlogs)
-markupnear.row(nearcurrent,nearproposals,mainmenu)
+nearnext = types.KeyboardButton(lt_nearnext)
+markupnear.row(nearcurrent,nearproposals,nearnext)
+markupnear.row(nearpool,nearlogs,mainmenu)
 
 # Linux markup
 markuplinux = types.ReplyKeyboardMarkup()
@@ -2200,7 +2200,25 @@ def command_nearproposals(message):
     pass
 # /Near proposals
 
-
+# Near next
+@bot.message_handler(func=lambda message: message.text == lt_nearnext)
+def command_nearnext(message):
+  if message.from_user.id == config.tg:
+    try:
+      bot.send_chat_action(config.tg, "typing")
+      nearnext1 = "export NODE_ENV=" + config.nearnetwork + " && near validators next | grep Next"
+      nearnext1 = str(subprocess.check_output(nearnext1, shell = True,encoding='utf-8'))
+      nearnext2 = "export NODE_ENV=" + config.nearnetwork + " && near validators next | grep Stake"
+      nearnext2 = str(subprocess.check_output(nearnext2, shell = True,encoding='utf-8'))
+      nearnext3 = "export NODE_ENV=" + config.nearnetwork + " && near validators next | grep " + config.poolname
+      nearnext3 = str(subprocess.check_output(nearnext3, shell = True,encoding='utf-8'))
+      nearnextall = str(nearnext1) + "\n" + str(nearnext2) + "\n" + str(nearnext3)
+      bot.send_message(config.tg, text=nearnextall, reply_markup=markupnear)
+    except:
+      bot.send_message(config.tg, text=("Can't get next validators info"), reply_markup=markupnear)
+  else:
+    pass
+# /Near next
 
 #######################################################
 # Linux tools

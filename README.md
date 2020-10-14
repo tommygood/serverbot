@@ -54,7 +54,7 @@ Tested on ubuntu 18.04 & python 3.6.9
 cd $HOME && git clone -v https://github.com/ama31337/serverbot.git && cd ./serverbot && chmod +x ./installsbot.sh
 ```
  4. Open ./config.py and insert your bot API and your telegram id.
- 5. Run ./installsbot.sh for Ubuntu/Debian and ./installsbot_centos.sh for CentOS script and source your bash or zsh to make bot start/stop commands working
+ 5. Run script ./installsbot.sh for Ubuntu/Debian and ./installsbot_centos.sh for CentOS, source your bash or zsh to make bot start/stop commands working
 ```sh
 ./installsbot.sh
 ```

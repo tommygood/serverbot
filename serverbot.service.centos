@@ -1,0 +1,13 @@
+[Unit]
+Description=serverbot
+After=syslog.target
+
+[Service]
+Type=simple
+User=<user>
+Group=<user>
+ExecStart=/usr/bin/python3 /home/<user>/serverbot/bot.py --pidfile /home/<user>/serverbot/serverbot.pid
+ExecStop=pkill --pidfile /home/<user>/serverbot/serverbot.pid
+
+[Install]
+WantedBy=multi-user.target

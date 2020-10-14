@@ -13,7 +13,7 @@ pip3 install --upgrade numpy --user
 pip3 install --upgrade pandas --user
 
 echo "Prepare configs"
-sed -i "s/<user>/"$USER"/g" serverbot.service sbot_centos.sh config.py
+sed -i "s/<user>/"$USER"/g" serverbot.service.centos config.py
 echo "alias botstop='sudo systemctl stop serverbot'" >> /home/$USER/.bash_aliases
 echo "alias botstart='sudo systemctl start serverbot'" >> /home/$USER/.bash_aliases
 echo "alias botstatus='sudo systemctl status serverbot'" >> /home/$USER/.bash_aliases
@@ -23,9 +23,7 @@ echo "alias botstatus='sudo systemctl status serverbot'" >> /home/$USER/.zshrc
 
 
 echo "Copy files"
-sudo cp -pv ./sbot_centos.sh /etc/init.d/serverbot
-chmod -v +x /etc/init.d/serverbot
-sudo cp -pv ./serverbot.service /etc/systemd/system
+sudo cp -pv ./serverbot.service.centos /etc/systemd/system/serverbot.service
 chmod -v +x ./bot.py
 echo "Done"
 echo "Download speedtest-cli"

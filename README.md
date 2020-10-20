@@ -94,7 +94,12 @@ Find in bot.py telebot.logger.setLevel(logging.ERROR) and change ERROR to DEBUG,
 ```sh
 $ journalctl -e -u serverbot > ~/serverbot/servicelog.log
 ```
-
+If near tools not working, make sure what you've near is /usr/bin, if not:
+```
+which near
+near_path=`which near`
+sudo ln -s $near_path /usr/bin/near
+```
 
 <img src="https://github.com/ama31337/neartips/blob/master/manuals/near_node_alert.png">
 

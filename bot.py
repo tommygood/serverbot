@@ -2386,7 +2386,7 @@ def AlertsNotificationsNode():
       td = 0
       # Check validator node running
       try:
-        valnodecheck = str(subprocess.check_output(["pidof ", nearpid], encoding='utf-8'))
+        valnodecheck = str(subprocess.check_output(["pidof ", nearpid, encoding='utf-8'))
         alrtprdnode =5
       except subprocess.CalledProcessError as i:
         if i.output != None:

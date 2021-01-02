@@ -85,10 +85,11 @@ botstatus
 ```
 
 ### What to do if something not working?
-If you get History load error, remove bot files from /tmp
+If you get History load error, remove bot files from /tmp and from serverbot db dirs
 ```sh
 sudo rm -rf /tmp/*.log
 sudo rm -rf /tmp/*.png
+sudo rm &HOME/serverbot/db/*
 ```
 Find in bot.py telebot.logger.setLevel(logging.ERROR) and change ERROR to DEBUG, restart serverbot service and execute
 ```sh

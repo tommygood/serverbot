@@ -2110,7 +2110,10 @@ def command_poolinfocheck(message):
               stake = format(stake, '.3f')
               num_produced_blocks = item["num_produced_blocks"]
               num_expected_blocks = item["num_expected_blocks"]
+              num_produced_chunks = item["num_produced_chunks"]
+              num_expected_chunks = item["num_expected_chunks"]
               produced_diff = num_expected_blocks - num_produced_blocks
+              produced_diff_chunks = num_expected_chunks - num_produced_chunks
       for item in next_validators:
           account_id = item['account_id']
           if account_id == target_account:
@@ -2127,13 +2130,16 @@ def command_poolinfocheck(message):
             stake = 0
             num_produced_blocks = 0
             num_expected_blocks = 0
+            num_produced_chunks = 0
+            num_expected_chunks = 0
             produced_diff = 0
+            produced_diff_chunks = 0
             pub_key = 0
             pub_key_next = 1
       if pub_key == pub_key_next:
 #          next_ok_info = "You are in next validators with stake: " + str(stake_next)
 #          next_notok_info = "You were kicked!"
-          poolinfo = "Pool name:       " + str(target_account) + "\n" + "Pub key:           " + str(pub_key) + "\n" + "Stake:               " + str(stake) + "\n" + "Produced blocks: " + str(num_produced_blocks) + "\n" + "Expected blocks: " + str(num_expected_blocks) + "\n" + "Produced diff:     " + str(produced_diff) + "\n" + "You are in next validators with stake: " + str(stake_next)
+          poolinfo = "Pool name:       " + str(target_account) + "\n" + "Pub key:           " + str(pub_key) + "\n" + "Stake:               " + str(stake) + "\n" + "Produced blocks: " + str(num_produced_blocks) + "\n" + "Expected blocks: " + str(num_expected_blocks) + "\n" + "Produced blocks diff:     " + str(produced_diff) + "\n" + "Produced chunks: " + str(num_produced_chunks) + "\n" + "Expected chunks: " + str(num_expected_chunks) + "\n" + "Produced chunks diff:     " + str(produced_diff_chunks) + "\n" + "You are in next validators with stake: " + str(stake_next)
           bot.send_message(config.tg, text=poolinfo, reply_markup=markupnear)
 #      if pub_key == pub_key_next:
 #          bot.send_message(config.tg, text=next_ok_info, reply_markup=markupnear)
@@ -2462,11 +2468,14 @@ def AlertsNotificationsBlocks():
             if account_id == target_account:
                 num_produced_blocks = item["num_produced_blocks"]
                 num_expected_blocks = item["num_expected_blocks"]
+                num_produced_chunks = item["num_produced_chunks"]
+                num_expected_chunks = item["num_expected_chunks"]
                 blocksdiff = num_expected_blocks - num_produced_blocks
+                chunksdiff = num_expected_chunks - num_produced_chunks
         # History data
         with open(os.path.join(config.serverbotpathdb, "blocks.dat"), "a") as i:
             i.write(str(int(time.time())) + ";" + str(int(num_produced_blocks)) + ";" + str(int(num_expected_blocks)) + ";" + str(int(blocksdiff)) + "\n")
-        # Alert
+        # Alert blocks
         if int(float(blocksdiff)) >= config.blocksdiff:
           if alrtprdblocks in config.repeattimealarmnode:
             try:

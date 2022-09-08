@@ -23,8 +23,11 @@ cfgmonitoringdiskio = 1 # Disk I/O Monitopring
 nearnetwork = 'betanet' # Choose your network - betanet/testnet/mainnet/guildnet
 poolname = 'xxx' # Your pool name
 syncalarm = 50 # Blocks diff for alarm
-blocksdiff = 10 # Blocks produced VS expected alarm
+blocksdiff = 1 # Blocks produced VS expected alarm
+chunksdiff = 1 # Chunks produced VS expected alarm
 repeattimealarmnode = [5,15,25,30,60,90,120,180,320, 640, 1280, 2560, 5120, 10240, 20480, 40960, 81920] # Notify every x second about validator node issues
 cfgAlertsNotificationsNode = 1 # Node pid monitoring
 cfgAlertsNotificationsSync = 1 # Sync status monitoring
 cfgAlertsNotificationsBlocks = 1 # Blocks produced VS expected monitoring
+cfgAlertsNotificationsChunks = 1 # Chunks produced VS expected monitoring
+

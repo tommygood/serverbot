@@ -106,4 +106,4 @@ sudo ln -s ${near_path} /usr/bin/near
 
 <img src="https://github.com/ama31337/neartips/blob/master/manuals/serverbot.gif">
 
-If bot was helpful to you, stake with us --> [@lux.poolv1.near](https://explorer.near.org/accounts/lux.poolv1.near)
+If bot was helpful to you, stake with us --> [@lux.poolv1.near](https://lux8.net/near)

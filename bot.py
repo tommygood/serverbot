@@ -2496,6 +2496,58 @@ def AlertsNotificationsBlocks():
       time.sleep(30)
       td += 30
 
+# NEAR Chunks pruduce monitoring
+def AlertsNotificationsChunks():
+  td = 0
+  alrtprdchunks = 30
+  while True:
+    if td == 30:
+      try:
+        td = 0
+        values = '{"jsonrpc": "2.0", "method": "validators", "id": "dontcare", "params": [null]}'
+        session = requests.Session()
+        H = {"Content-Type": "application/json"}
+        response = session.post(rpcurl, values, headers = H)#
+        response_text = response.text
+        json_str = response_text.replace("'", "\"")
+        json_main = json.loads(json_str)
+        level_one = json_main["result"]
+        level_two = level_one["current_validators"]
+        accounts_list = []
+        target_account = config.poolname
+        for item in level_two:
+            account_id = item['account_id']
+            if account_id == target_account:
+                num_produced_blocks = item["num_produced_blocks"]
+                num_expected_blocks = item["num_expected_blocks"]
+                num_produced_chunks = item["num_produced_chunks"]
+                num_expected_chunks = item["num_expected_chunks"]
+                blocksdiff = num_expected_blocks - num_produced_blocks
+                chunksdiff = num_expected_chunks - num_produced_chunks
+        # History data
+        with open(os.path.join(config.serverbotpathdb, "chunks.dat"), "a") as i:
+            i.write(str(int(time.time())) + ";" + str(int(num_produced_chunks)) + ";" + str(int(num_expected_chunks)) + ";" + str(int(chunksdiff)) + "\n")
+        # Alert chunks
+        if int(float(chunksdiff)) >= config.chunksdiff:
+          if alrtprdchunks in config.repeattimealarmnode:
+            try:
+                bot.send_message(config.tg,"\U0001F6A8 " + str(chunksdiff) + ("chunks pruduced less than expected !!! "))
+            except:
+              pass
+            alrtprdchunks +=30
+          else:
+            alrtprdchunks +=30
+        if int(float(chunksdiff)) < config.chunksdiff:
+          alrtprdchunks = 30
+        time.sleep(30)
+        td += 30
+      except:
+        time.sleep(30)
+        td += 30
+    else:
+      time.sleep(30)
+      td += 30
+
 # RAM Monitoring
 def AlertsNotificationsRam():
   td = 0
@@ -2657,6 +2709,10 @@ if __name__ == '__main__':
   if config.cfgAlertsNotificationsBlocks == 1:
     AlertsNotificationsBlocks = threading.Thread(target = AlertsNotificationsBlocks)
     AlertsNotificationsBlocks.start()
+
+  if config.cfgAlertsNotificationsChunks == 1:
+    AlertsNotificationsChunks = threading.Thread(target = AlertsNotificationsChunks)
+    AlertsNotificationsChunks.start()
 
   if config.cfgAlertsNotificationsRam == 1:
     AlertsNotificationsRam = threading.Thread(target = AlertsNotificationsRam)

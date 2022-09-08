@@ -59,8 +59,8 @@ cd $HOME && git clone -v https://github.com/ama31337/serverbot.git && cd ./serve
 ./installsbot.sh
 ```
 ```sh
-source /home/$USER/.bash_aliases
-source /home/$USER/.zshrc
+source ${HOME}/.bash_aliases
+source ${HOME}/.zshrc
 ```
 
 
@@ -89,22 +89,21 @@ If you get History load error, remove bot files from /tmp and from serverbot db 
 ```sh
 sudo rm -rf /tmp/*.log
 sudo rm -rf /tmp/*.png
-sudo rm &HOME/serverbot/db/*
+sudo rm ${HOME}/serverbot/db/*
 ```
 Find in bot.py telebot.logger.setLevel(logging.ERROR) and change ERROR to DEBUG, restart serverbot service and execute
 ```sh
-$ journalctl -e -u serverbot > ~/serverbot/servicelog.log
+$ sudo journalctl -e -u serverbot > ~/serverbot/servicelog.log
 ```
 If near tools not working, make sure what you've near is /usr/bin, if not:
 ```
 which near
-near_path=`which near`
-sudo ln -s $near_path /usr/bin/near
+near_path=$(which near)
+sudo ln -s ${near_path} /usr/bin/near
 ```
 
 <img src="https://github.com/ama31337/neartips/blob/master/manuals/near_node_alert.png">
 
 <img src="https://github.com/ama31337/neartips/blob/master/manuals/serverbot.gif">
 
-If bot was helpful to you, feel free to donate a tip --> [@31337.near](https://explorer.near.org/accounts/31337.near)
-Or stake with us --> [@lux.poolv1.near](https://explorer.near.org/accounts/lux.poolv1.near)
+If bot was helpful to you, stake with us --> [@lux.poolv1.near](https://explorer.near.org/accounts/lux.poolv1.near)

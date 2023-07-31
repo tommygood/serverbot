@@ -6,7 +6,7 @@ sudo yum -y install python3-pip
 sudo yum -y install wget
 sudo yum -y install python3-devel
 pip3 install --upgrade psutil --user
-pip3 install "pyTelegramBotAPI==3.6.5" --user
+pip3 install "pyTelegramBotAPI==4.2.0" --user
 pip3 install --upgrade python-dotenv --user
 pip3 install --upgrade matplotlib --user
 pip3 install --upgrade numpy --user

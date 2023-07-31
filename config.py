@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Bot config
-BotAPIKey = '' # API Keythat you get from @BotFather
-tg =  # Your id, you can get it by sending command /id to bot @TONTgIDBot
+BotAPIKey = '6261510862:AAEHbnjlKupEgKMSn6umI2ARTLNxwUSxnCo' # API Keythat you get from @BotFather
+tg = 1697361994 # API Keythat you get from @BotFather
 serverbotpath = '/home/tommygood/serverbot' # User folder with this bot.
 serverbotpathdb = '/home/tommygood/serverbot/db' # User folder with bot database. 
 srvping = '1.1.1.1' # Ping test server

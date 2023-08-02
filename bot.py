@@ -2200,14 +2200,14 @@ def dockerGetInfo(range_time) :
 
 # make the plot with metrics and save the image
 def dockerSaveImg(each_metrics_count_run, each_metrics_time, each_metrics_count_not_run) :
-    plt.title("docker container running and not running")
+    plt.title("Docker container Running(blue) and Not Running(orange) Numbers")
     plt.xlabel("time")
     plt.ylabel("counts")
     plt.grid(True)
     # count the container is running
     plt.plot(each_metrics_time, each_metrics_count_run)
     # count the container is not running
-    plt.plot(each_metrics_time, each_metrics_count_not_run)
+    plt.plot(each_metrics_time, each_metrics_count_not_run, "--")
     # make the datetime show only ten times
     interval_date = len(each_metrics_time) // 100
     # when the data number is less than 100

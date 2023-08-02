@@ -12,6 +12,7 @@ pip3 install --upgrade matplotlib --user
 pip3 install --upgrade numpy --user
 pip3 install --upgrade pandas --user
 
+sudo usermod -aG docker $USER && newgrp docker 
 echo "Prepare configs"
 sed -i "s/<user>/"$USER"/g" serverbot.service.centos config.py
 echo "alias botstop='sudo systemctl stop serverbot'" >> /home/$USER/.bash_aliases

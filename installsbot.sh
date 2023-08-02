@@ -5,12 +5,13 @@ sudo apt -y install traceroute
 sudo apt -y install python3-pip
 sudo apt -y install wget
 pip3 install --upgrade psutil
-pip3 install --upgrade pyTelegramBotAPI
+pip3 install "pyTelegramBotAPI==4.2.0" --user
 pip3 install --upgrade python-dotenv
 pip3 install --upgrade matplotlib
 pip3 install --upgrade numpy
 pip3 install --upgrade pandas
 
+sudo usermod -aG docker $USER && newgrp docker
 echo "Prepare configs"
 sed -i "s/<user>/"$USER"/g" serverbot.service sbot.sh config.py
 echo "alias botstop='sudo systemctl stop serverbot'" >> /home/$USER/.bash_aliases

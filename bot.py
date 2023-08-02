@@ -4,6 +4,7 @@ import os, sys
 import config
 import time
 import datetime
+from datetime import datetime as dt
 import subprocess
 import tty
 import pty
@@ -18,11 +19,13 @@ from telebot import types
 from telebot import util
 from dotenv import load_dotenv
 import matplotlib
+import matplotlib.dates as mdates
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import gettext
 import requests
 import json
+from subprocess import call, PIPE, run
 
 # API Token
 bot = telebot.TeleBot(config.BotAPIKey)
@@ -85,8 +88,8 @@ lt_starttime = ("Uptime")
 lt_starttime = "\U0001F7E2 " + lt_starttime
 lt_mainmenu = ("Main menu")
 lt_mainmenu =  "\U0001F3E1 " + lt_mainmenu
-lt_neartools = ("NEAR tools")
-lt_neartools = "\u24c3 " + lt_neartools
+lt_docker_container = ("Docker Container")
+lt_docker_container = "\U00002b50" + lt_docker_container
 lt_nearpool = ("My pool info")
 lt_nearpool = "\u2139 " + lt_nearpool
 lt_nearlogs = ("Near logs")
@@ -106,7 +109,7 @@ cpu = types.KeyboardButton(lt_cpu)
 ram = types.KeyboardButton(lt_ram)
 disks = types.KeyboardButton(lt_disks)
 currntdiskload = types.KeyboardButton(lt_currntdiskload)
-neartools = types.KeyboardButton(lt_neartools)
+neartools = types.KeyboardButton(lt_docker_container)
 linuxtools = types.KeyboardButton(lt_linuxtools)
 markup.row(cpu,ram,disks)
 markup.row(currntdiskload,neartools,linuxtools)
@@ -154,6 +157,18 @@ def send_welcome(message):
 # /Start
 
 # InlineKeyboards
+# Docker Container
+container_load_hist = types.InlineKeyboardMarkup()
+
+container_load_hist.row(
+types.InlineKeyboardButton(text=("3h"), callback_data="container_load_hist_3h"),
+types.InlineKeyboardButton(text=("6h"), callback_data="container_load_hist_6h"),
+types.InlineKeyboardButton(text=("12h"), callback_data="container_load_hist_12h"),
+types.InlineKeyboardButton(text=("24h"), callback_data="container_load_hist_24h"),
+types.InlineKeyboardButton(text=("3d"), callback_data="container_load_hist_3d"),
+types.InlineKeyboardButton(text=("10d"), callback_data="container_load_hist_10d"),
+types.InlineKeyboardButton(text=("30d"), callback_data="container_load_hist_30d"))
+# Docker Container
 #CPU
 cpuloadhist = types.InlineKeyboardMarkup()
 cpuloadhist.row(
@@ -2070,161 +2085,136 @@ def inlinekeyboards(call):
         bot.edit_message_media(media=types.InputMedia(type='photo', media=diskioload_720h),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=diskiohistmore)
       except:
         bot.send_message(config.tg, text = ("Disk I/O Utilization history load error"))
+    if call.data == "container_load_hist_3h":
+        dockerGetInfo(180)
+        container_run = open('/tmp/containerRunCounts.png', 'rb')
+        try :
+            bot.edit_message_media(media=types.InputMedia(type='photo', media=container_run),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=container_load_hist)
+        except Exception as e:
+            bot.send_message(config.tg, text=(e))
+    if call.data == "container_load_hist_6h":
+        dockerGetInfo(360)
+        container_run = open('/tmp/containerRunCounts.png', 'rb')
+        try :
+            bot.edit_message_media(media=types.InputMedia(type='photo', media=container_run),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=container_load_hist)
+        except Exception as e:
+            bot.send_message(config.tg, text=(e))
+    if call.data == "container_load_hist_12h":
+        dockerGetInfo(720)
+        container_run = open('/tmp/containerRunCounts.png', 'rb')
+        try :
+            bot.edit_message_media(media=types.InputMedia(type='photo', media=container_run),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=container_load_hist)
+        except Exception as e:
+            bot.send_message(config.tg, text=(e))
+    if call.data == "container_load_hist_1d":
+        dockerGetInfo(1440)
+        container_run = open('/tmp/containerRunCounts.png', 'rb')
+        try :
+            bot.edit_message_media(media=types.InputMedia(type='photo', media=container_run),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=container_load_hist)
+        except Exception as e:
+            bot.send_message(config.tg, text=(e))
+    if call.data == "container_load_hist_3d":
+        dockerGetInfo(4320)
+        container_run = open('/tmp/containerRunCounts.png', 'rb')
+        try :
+            bot.edit_message_media(media=types.InputMedia(type='photo', media=container_run),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=container_load_hist)
+        except Exception as e:
+            bot.send_message(config.tg, text=(e))
+    if call.data == "container_load_hist__10d":
+        dockerGetInfo(43200)
+        container_run = open('/tmp/containerRunCounts.png', 'rb')
+        try :
+            bot.edit_message_media(media=types.InputMedia(type='photo', media=container_run),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=container_load_hist)
+        except Exception as e:
+            bot.send_message(config.tg, text=(e))
+    if call.data == "container_load_hist_30d":
+        dockerGetInfo(129600)
+        container_run = open('/tmp/containerRunCounts.png', 'rb')
+        try :
+            bot.edit_message_media(media=types.InputMedia(type='photo', media=container_run),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=container_load_hist)
+        except Exception as e:
+            bot.send_message(config.tg, text=(e))
   # diskio graph
 
 #######################################################
-# Near tools
-# Near tools start
-@bot.message_handler(func=lambda message: message.text == lt_neartools)
+# Docker container
+# Docker container start
+@bot.message_handler(func=lambda message: message.text == lt_docker_container)
 def command_linuxtools(message):
-  if message.from_user.id == config.tg:
-    bot.send_message(config.tg, text=("Tools to check your validator status"), reply_markup=markupnear)
-  else:
-    pass
-# /Near tools start
+    try :
+        if message.from_user.id == config.tg:
+            result = run(["docker", "ps"], stdout=PIPE, stderr=PIPE, universal_newlines=True)
+            error_msg = ""
+            if not str(result.stderr) == "" :
+                error_msg += "\nError : \n" + str(result.stderr)
+            result = str(result.stdout)
+            dockerGetInfo(60)
+            container_run = open('/tmp/containerRunCounts.png', 'rb')
+            bot.send_photo(config.tg, container_run, reply_markup=container_load_hist)
+    except Exception as e:
+        bot.send_message(config.tg, text=(e))
 
-# Pool info
-@bot.message_handler(func=lambda message: message.text == lt_nearpool)
-def command_poolinfocheck(message):
-  if message.from_user.id == config.tg:
-    try:
-      bot.send_chat_action(config.tg, "typing")
-      values = '{"jsonrpc": "2.0", "method": "validators", "id": "dontcare", "params": [null]}'
-      session = requests.Session()
-      H = {"Content-Type": "application/json"}
-      response = session.post(rpcurl, values, headers = H)
-      response_text = response.text
-      json_str = response_text.replace("'", "\"")
-      json_main = json.loads(json_str)
-      level_one = json_main["result"]
-      current_validators = level_one["current_validators"]
-      next_validators = level_one["next_validators"]
-      prev_epoch_kickout = level_one["prev_epoch_kickout"]
-      accounts_list = []
-      target_account = config.poolname
-      for item in current_validators:
-          account_id = item['account_id']
-          if account_id == target_account:
-              pub_key = item["public_key"]
-              stake = int(item["stake"])/1000000000000000000000000
-              stake = format(stake, '.3f')
-              num_produced_blocks = item["num_produced_blocks"]
-              num_expected_blocks = item["num_expected_blocks"]
-              num_produced_chunks = item["num_produced_chunks"]
-              num_expected_chunks = item["num_expected_chunks"]
-              produced_diff = num_expected_blocks - num_produced_blocks
-              produced_diff_chunks = num_expected_chunks - num_produced_chunks
-      for item in next_validators:
-          account_id = item['account_id']
-          if account_id == target_account:
-              pub_key_next = item["public_key"]
-              stake_next = int(item["stake"])/1000000000000000000000000
-              stake_next = format(stake_next, '.3f')
-      for item in prev_epoch_kickout:
-          account_id = item['account_id']
-          if account_id == target_account:
-            kick_reason = str(item["reason"])
-            remove_chars = ["{","}","'"]
-            for charrem in remove_chars:
-                kick_reason = kick_reason.replace(charrem,"")
-            stake = 0
-            num_produced_blocks = 0
-            num_expected_blocks = 0
-            num_produced_chunks = 0
-            num_expected_chunks = 0
-            produced_diff = 0
-            produced_diff_chunks = 0
-            pub_key = 0
-            pub_key_next = 1
-      if pub_key == pub_key_next:
-#          next_ok_info = "You are in next validators with stake: " + str(stake_next)
-#          next_notok_info = "You were kicked!"
-          poolinfo = "Pool name:       " + str(target_account) + "\n" + "Pub key:           " + str(pub_key) + "\n" + "Stake:               " + str(stake) + "\n" + "Produced blocks: " + str(num_produced_blocks) + "\n" + "Expected blocks: " + str(num_expected_blocks) + "\n" + "Produced blocks diff:     " + str(produced_diff) + "\n" + "Produced chunks: " + str(num_produced_chunks) + "\n" + "Expected chunks: " + str(num_expected_chunks) + "\n" + "Produced chunks diff:     " + str(produced_diff_chunks) + "\n" + "You are in next validators with stake: " + str(stake_next)
-          bot.send_message(config.tg, text=poolinfo, reply_markup=markupnear)
-#      if pub_key == pub_key_next:
-#          bot.send_message(config.tg, text=next_ok_info, reply_markup=markupnear)
-      else:
-          next_notok_info = "You were kicked, because " + str(kick_reason)
-          bot.send_message(config.tg, text=next_notok_info, reply_markup=markupnear)
-    except:
-      bot.send_message(config.tg, text=("Can't get pool info"), reply_markup=markupnear)
-  else:
-    pass
-# /Pool info
+# get docker info in the specified datetime
+def dockerGetInfo(range_time) :
+    # now time
+    now_time = time.time()
+    # range time is based on minute
+    range_time = now_time - (range_time * 60)
+    db_file = open(os.path.join(config.serverbotpathdb, "dockerContainer.dat"), "r")
+    docker_info_history = json.load(db_file)
+    # count each metrics of the numbers of containers were running and not running
+    each_metrics_count_run = []
+    each_metrics_count_not_run = []
+    each_metrics_time = []
+    # each info include multiple containers
+    for each_info in docker_info_history :
+        # key is the time found this metrics
+        for key in each_info.keys() :
+            # this container info was found in the requested range time
+            if float(key) >= float(range_time) :
+                # number of running containers in a metric
+                count_run = 0
+                count_not_run = 0
+                # count this metrics
+                for each_container in each_info[key] :
+                    each_container = each_container.split(" ")
+                    # the container name
+                    each_container_name = each_container[0]
+                    # the container running, true or false
+                    each_container_running = each_container[1]
+                    # if running, count + 1
+                    if each_container_running == "True" :
+                        count_run += 1
+                    # else means the container is not running
+                    else :
+                        count_not_run += 1
+                # save metrics which are in the range to make the plot
+                each_metrics_count_run.append(count_run)
+                each_metrics_count_not_run.append(count_not_run)
+                timestamp = dt.fromtimestamp(float(key))
+                formatted_time = timestamp.strftime('%Y-%m-%d %H:%M')
+                each_metrics_time.append(formatted_time)
+    db_file.close()
+    # make the plot with metrics
+    dockerSaveImg(each_metrics_count_run, each_metrics_time, each_metrics_count_not_run)
 
-# Near logs
-@bot.message_handler(func=lambda message: message.text == lt_nearlogs)
-def command_nearlogs(message):
-  if message.from_user.id == config.tg:
-    try:
-      bot.send_chat_action(config.tg, "typing")
-      nearlogs = str(subprocess.check_output(nearlogsreq, shell = True,encoding='utf-8'))
-      bot.send_message(config.tg, text=nearlogs, reply_markup=markupnear)
-    except:
-      bot.send_message(config.tg, text=("Can't get near logs"), reply_markup=markupnear)
-  else:
-    pass
-# /Near logs
-
-# Near current
-@bot.message_handler(func=lambda message: message.text == lt_nearcurrent)
-def command_nearcurrent(message):
-  if message.from_user.id == config.tg:
-    try:
-      bot.send_chat_action(config.tg, "typing")
-      nearcurrent1 = "export NODE_ENV=" + config.nearnetwork + " && near validators current | grep Validators"
-      nearcurrent1 = str(subprocess.check_output(nearcurrent1, shell = True,encoding='utf-8'))
-      nearcurrent2 = "export NODE_ENV=" + config.nearnetwork + " && near validators current | grep Stake"
-      nearcurrent2 = str(subprocess.check_output(nearcurrent2, shell = True,encoding='utf-8'))
-      nearcurrent3 = "export NODE_ENV=" + config.nearnetwork + " && near validators current | grep " + config.poolname
-      nearcurrent3 = str(subprocess.check_output(nearcurrent3, shell = True,encoding='utf-8'))
-      nearcurrentall = str(nearcurrent1) + "\n" + str(nearcurrent2) + "\n" + str(nearcurrent3)
-      bot.send_message(config.tg, text=nearcurrentall, reply_markup=markupnear)
-    except:
-      bot.send_message(config.tg, text=("Can't get current validators info"), reply_markup=markupnear)
-  else:
-    pass
-# /Near current
-
-# Near proposals
-@bot.message_handler(func=lambda message: message.text == lt_nearproposals)
-def command_nearproposals(message):
-  if message.from_user.id == config.tg:
-    try:
-      bot.send_chat_action(config.tg, "typing")
-      nearproposals1 = "export NODE_ENV=" + config.nearnetwork + " && near proposals | grep Proposals"
-      nearproposals1 = str(subprocess.check_output(nearproposals1, shell = True,encoding='utf-8'))
-      nearproposals2 = "export NODE_ENV=" + config.nearnetwork + " && near proposals | grep Stake"
-      nearproposals2 = str(subprocess.check_output(nearproposals2, shell = True,encoding='utf-8'))
-      nearproposals3 = "export NODE_ENV=" + config.nearnetwork + " && near proposals | grep " + config.poolname
-      nearproposals3 = str(subprocess.check_output(nearproposals3, shell = True,encoding='utf-8'))
-      nearnearproposalsall = str(nearproposals1) + "\n" + str(nearproposals2) + "\n" + str(nearproposals3)
-      bot.send_message(config.tg, text=nearnearproposalsall, reply_markup=markupnear)
-    except:
-      bot.send_message(config.tg, text=("Can't get proposals validators info"), reply_markup=markupnear)
-  else:
-    pass
-# /Near proposals
-
-# Near next
-@bot.message_handler(func=lambda message: message.text == lt_nearnext)
-def command_nearnext(message):
-  if message.from_user.id == config.tg:
-    try:
-      bot.send_chat_action(config.tg, "typing")
-      nearnext1 = "export NODE_ENV=" + config.nearnetwork + " && near validators next | grep Next"
-      nearnext1 = str(subprocess.check_output(nearnext1, shell = True,encoding='utf-8'))
-      nearnext2 = "export NODE_ENV=" + config.nearnetwork + " && near validators next | grep Stake"
-      nearnext2 = str(subprocess.check_output(nearnext2, shell = True,encoding='utf-8'))
-      nearnext3 = "export NODE_ENV=" + config.nearnetwork + " && near validators next | grep " + config.poolname
-      nearnext3 = str(subprocess.check_output(nearnext3, shell = True,encoding='utf-8'))
-      nearnextall = str(nearnext1) + "\n" + str(nearnext2) + "\n" + str(nearnext3)
-      bot.send_message(config.tg, text=nearnextall, reply_markup=markupnear)
-    except:
-      bot.send_message(config.tg, text=("Can't get next validators info"), reply_markup=markupnear)
-  else:
-    pass
-# /Near next
+# make the plot with metrics and save the image
+def dockerSaveImg(each_metrics_count_run, each_metrics_time, each_metrics_count_not_run) :
+    plt.title("docker container running and not running")
+    plt.xlabel("time")
+    plt.ylabel("counts")
+    plt.grid(True)
+    # count the container is running
+    plt.plot(each_metrics_time, each_metrics_count_run)
+    # count the container is not running
+    plt.plot(each_metrics_time, each_metrics_count_not_run)
+    # make the datetime show only ten times
+    interval_date = len(each_metrics_time) // 100
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=interval_date))
+    plt.gcf().autofmt_xdate()
+    plt.tight_layout()
+    plt.savefig('/tmp/containerRunCounts.png')
+    plt.close()
 
 #######################################################
 # Linux tools
@@ -2695,8 +2685,101 @@ def monitoringdiskio():
       time.sleep(4)
       td += 5
 
+# write the docker ps metrics into db file
+def collectDockerMetrics() :
+    while True :
+        try :
+            result = run(["docker", "ps", "-a"], stdout=PIPE, stderr=PIPE, universal_newlines=True)
+            # have error message
+            if not str(result.stderr) == "" :
+                error_msg = "\nError : \n" + str(result.stderr)
+                bot.send_message(config.tg, error_msg, reply_markup=markup)
+            # std out
+            result = str(result.stdout).split("\n")
+            now_time = str(time.time())
+            content = {now_time : []}
+            #print(str(result) + error_msg)
+            container_id = []
+            # get container id
+            for i in range(1, len(result)-1) :
+                container_id.append(str(result[i]).split(" ")[0])
+            # write docker container info into file
+            for container in container_id :
+                result = run(["docker", "inspect", container], stdout=PIPE, stderr=PIPE, universal_newlines=True)
+                result = json.loads(result.stdout)[0]
+                content[now_time].append(str(result["Name"]) + " " + str(result["State"]["Running"]))
+            # read file of storing the docker container info
+            db_file = open(os.path.join(config.serverbotpathdb, "dockerContainer.dat"))
+            origin_content = json.load(db_file)
+            db_file.close()
+            # check whether the number of containers have changed compare to last metrics
+            checkContainerNumber(origin_content[len(origin_content)-1:][0], content[now_time])
+            # write the new metric
+            origin_content.append(content)
+            db_file = open(os.path.join(config.serverbotpathdb, "dockerContainer.dat"), "w")
+            json.dump(origin_content, db_file)
+            db_file.close()
+            time.sleep(5)
+        except Exception as e:
+            bot.send_message(config.tg, e, reply_markup=markup)
+            print(e)
+
+# check whether the number of containers have changed compare to last metrics
+def checkContainerNumber(docker_last_history, content) :
+    try :
+        # key is the time found this metrics
+        for key in docker_last_history.keys() :
+            # last record
+            last_name = []
+            last_running = []
+            for i in range(len(docker_last_history[key])) :
+                last = docker_last_history[key][i].split(" ")
+                last_name.append(last[0])
+                last_running.append(last[1])
+            # current record
+            cur_name = []
+            cur_running = []
+            for i in range(len(content)) :
+                cur = content[i].split(" ")
+                cur_name.append(cur[0])
+                cur_running.append(cur[1])
+            # check last record have different with current record
+            for i in range(len(last_name)) :
+                container_name = last_name[i]
+                # check whether the past container name not exist in new record
+                if container_name not in cur_name :
+                    msg = "Container not Existed !" + "\n" + container_name
+                    bot.send_message(config.tg, msg, reply_markup=markup)
+                # still existed then check whether it still running
+                else :
+                    # container index in current record
+                    cur_index = cur_name.index(container_name)
+                    # 
+                    if last_running[i] == cur_running[cur_index] :
+                        continue
+                    else :
+                        # running convert to not running
+                        if last_running[i] == "True" :
+                            msg = "Container not Running !" + "\n" + container_name
+                            bot.send_message(config.tg, msg, reply_markup=markup)
+                        else :
+                            msg = "Container start Running !" + "\n" + container_name
+                            bot.send_message(config.tg, msg, reply_markup=markup)
+            # check current record have different with last record
+            for container_name in cur_name :
+                if container_name not in last_name :
+                    msg = "New Container !" + "\n" + container_name
+                    bot.send_message(config.tg, msg, reply_markup=markup)
+            #bot.send_message(config.tg, str(cur_name) + "\n" + str(last_name), reply_markup=markup)
+            #bot.send_message(config.tg, str(time.time()), reply_markup=markup)
+    except Exception as e:
+        bot.send_message(config.tg, e, reply_markup=markup)
+
 
 if __name__ == '__main__':
+  if config.start_monitor_docker_container == 1 :
+    collectDockerMetrics = threading.Thread(target = collectDockerMetrics)
+    collectDockerMetrics.start()
 
   if config.cfgAlertsNotificationsNode == 1:
     AlertsNotificationsNode = threading.Thread(target = AlertsNotificationsNode)

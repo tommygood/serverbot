@@ -2210,6 +2210,9 @@ def dockerSaveImg(each_metrics_count_run, each_metrics_time, each_metrics_count_
     plt.plot(each_metrics_time, each_metrics_count_not_run)
     # make the datetime show only ten times
     interval_date = len(each_metrics_time) // 100
+    # when the data number is less than 100
+    if interval_date == 0 :
+        interval_date = 1
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=interval_date))
     plt.gcf().autofmt_xdate()
     plt.tight_layout()
@@ -2694,6 +2697,7 @@ def collectDockerMetrics() :
             if not str(result.stderr) == "" :
                 error_msg = "\nError : \n" + str(result.stderr)
                 bot.send_message(config.tg, error_msg, reply_markup=markup)
+                continue
             # std out
             result = str(result.stdout).split("\n")
             now_time = str(time.time())
@@ -2712,8 +2716,11 @@ def collectDockerMetrics() :
             db_file = open(os.path.join(config.serverbotpathdb, "dockerContainer.dat"))
             origin_content = json.load(db_file)
             db_file.close()
-            # check whether the number of containers have changed compare to last metrics
-            checkContainerNumber(origin_content[len(origin_content)-1:][0], content[now_time])
+            # check whether the db is empty
+            if not len(origin_content) == 0 :
+                # not empty, then
+                # check whether the number of containers have changed compare to last metrics
+                checkContainerNumber(origin_content[len(origin_content)-1:][0], content[now_time])
             # write the new metric
             origin_content.append(content)
             db_file = open(os.path.join(config.serverbotpathdb, "dockerContainer.dat"), "w")

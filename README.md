@@ -1,7 +1,7 @@
 # ServerBot Readme
-This is telegram bot for server monitoring. 
+This is telegram bot for server and docker containers monitoring. 
 This bot can send messages to your telegram id
-Tested on ubuntu 18.04 & python 3.6.9
+
 
 # What this bot can do?
 
@@ -10,18 +10,21 @@ Tested on ubuntu 18.04 & python 3.6.9
  1. CPU load 
  2. RAM load
  3. Network
+ 4. Docker container numbers
 
 ### Historical data
  1. CPU Utilization
  2. RAM Load
  3. Disk I/O
  4. Network perfomance 
- 5. Ping test 
+ 5. Ping test
+ 6. docker container name, is running
 
 ### Alert
  1. High CPU Utilization
  2. High RAM load
  3. Network degradation
+ 4. when the docker container is created or not existed or not running or start running
 
 ### Server
  1. Check CPU load

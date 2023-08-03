@@ -10,7 +10,9 @@ This bot can send messages to your telegram id
  1. CPU load 
  2. RAM load
  3. Network
- 4. Docker container numbers
+ 4. Docker container numbers (running and not running)
+    - ![image](https://github.com/tommygood/serverbot/assets/96759292/fc55b39e-cbe2-4bf2-9172-f366addb5c3d)
+
 
 ### Historical data
  1. CPU Utilization
@@ -24,7 +26,11 @@ This bot can send messages to your telegram id
  1. High CPU Utilization
  2. High RAM load
  3. Network degradation
- 4. when the docker container is created or not existed or not running or start running
+ 4. docker container
+    - new container is created
+    - container not existed
+    - container stop running
+    - container start running
 
 ### Server
  1. Check CPU load

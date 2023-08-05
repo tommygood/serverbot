@@ -2106,7 +2106,7 @@ def inlinekeyboards(call):
             bot.edit_message_media(media=types.InputMedia(type='photo', media=container_run),chat_id=call.message.chat.id,message_id=call.message.message_id, reply_markup=container_load_hist)
         except Exception as e:
             bot.send_message(config.tg, text=(e))
-    if call.data == "container_load_hist_1d":
+    if call.data == "container_load_hist_24h":
         dockerGetInfo(1440)
         container_run = open('/tmp/containerRunCounts.png', 'rb')
         try :
